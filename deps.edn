@@ -2,5 +2,6 @@
  :deps {clojure-saxon {:mvn/version "0.9.4"
                        :exclusions [org.clojars.pjt/saxon9 org.clojars.pjt/saxon9-s9api]}
         net.sf.saxon/Saxon-HE {:mvn/version "9.9.1-5"}
-        org.clojure/data.json {:mvn/version "0.2.6"}}
+        org.clojure/data.json {:mvn/version "0.2.6"}
+        org.apache.commons/commons-text {:mvn/version "1.8"}}
  :aliases {:build {:main-opts ["-m clj.build-manual"]}}}

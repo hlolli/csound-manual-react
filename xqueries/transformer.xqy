@@ -3,6 +3,7 @@ declare namespace saxon="http://saxon.sf.net/";
 declare namespace xs = "http://www.w3.org/2001/XMLSchema";
 declare namespace functx = "http://www.functx.com";
 declare namespace xi="http://www.w3.org/2001/XInclude";
+import module namespace f = "https://www.github.com/hlolli" at "./xqueries/functions.xqy";
 declare option saxon:output "method=text";
 
 
@@ -39,29 +40,6 @@ declare function functx:change-element-names-deep
           else $node
  };
 
-declare function local:change-links
-  ( $nodes as node()*)  as node()* {
-  let $oldName := xs:QName('link')
-  let $newName := xs:QName('Link')
-  for $node in $nodes
-   return if ($node instance of element())
-          then element
-                 {if (node-name($node) = $oldName)
-                      then $newName
-                      else node-name($node) }
-                 {if (node-name($node) = $oldName)
-                      then attribute {"to"} {concat("/manual/", $node/@linkend)}
-                      else $node/@*,
-                  if (node-name($node) = $oldName)
-                      then string-join($node, "")
-                      else local:change-links($node/node())}
-          else if ($node instance of document-node())
-          then local:change-links($node/node())
-          else $node
- };
-
-
-
 let $n := "&#10;"
 let $title := //refentrytitle
 let $id := /refentry/@id
@@ -72,14 +50,25 @@ let $refsects :=
   let $p := for $para in $refsect/para
     (: transform the elements :)
     let $paratr1 := functx:change-element-names-deep($para,
-       xs:QName('para'), xs:QName('p'))
+       xs:QName('para'), xs:QName('div'))
     let $paratr2 := functx:change-element-names-deep($paratr1,
        xs:QName('emphasis'), xs:QName('em'))
     (: insert included examples :)
-    let $paratr3 := functx:change-element-names-deep($paratr2,
-       xs:QName('xi:include'), xs:QName('div'))
-    let $paratr4 := local:change-links($paratr3)
-    return <div className="manual-para">{$paratr4}</div>
+    let $paratr3 := f:include-example($paratr2)
+    (:
+     : functx:change-element-names-deep($paratr2,
+     :    xs:QName('xi:include'), xs:QName('div'))
+     :)
+    let $paratr4 := f:change-links($paratr3)
+    let $paratr5 := f:change-programlisting($paratr4)
+    let $paratr6 := f:change-informalexample($paratr5)
+    let $paratr7 := f:change-ulinks($paratr6)
+    let $paratr8 := f:change-example($paratr7)
+    let $paratr9 := f:change-member($paratr8)
+    let $paratr10 := f:change-simplelist($paratr9)
+    let $paratr11 := f:change-itemizedlist($paratr10)
+    let $paratr12 := f:change-listitem($paratr11)
+    return <div className="manual-para">{$paratr12}</div>
   return
   <div className="manual-refsect1">
    <h1>{string($refsect/title[1])}</h1>

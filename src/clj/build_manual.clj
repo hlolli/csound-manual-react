@@ -2,7 +2,8 @@
   (:require [saxon :as xml]
             [clojure.data.json :as json]
             [clojure.java.io :as io]
-            [clojure.string :as string]))
+            [clojure.string :as string])
+  (:import [org.apache.commons.text StringEscapeUtils]))
 
 (def entities
   (str
@@ -73,7 +74,7 @@
 
 (def remove-xmls
   #{"top.xml" "topXO.xml" "splitrig.txt"
-    "LinkMetro.xml"})
+    "LinkMetro.xml" "template.xml"})
 
 (def index-js-prefix
   (str "import React from 'react';\n"
@@ -122,7 +123,7 @@
                                     (do (println "xml-compiling:" (.getName %))
                                         (xml-compiler %)) :file %) opcodes-dir)
         out-dir (io/file "tmp")]
-    (loop [[{:keys [parsed-xml file]} & rest] (take 100 parsed-xmls)
+    (loop [[{:keys [parsed-xml file]} & rest] (take 200 parsed-xmls)
            index-js ""]
       (if-not rest
         (spit (io/file out-dir "index.jsx")
@@ -141,6 +142,8 @@
                     xquery-jsx
                     remove-xml-comments
                     stringify-screens
-                    quote-curlies))
+                    StringEscapeUtils/unescapeHtml4
+                    ;; quote-curlies
+                    ))
           (recur rest
                  (str index-js "\n" index-entry)))))))
