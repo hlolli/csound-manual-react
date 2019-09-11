@@ -1,5 +1,6 @@
 {:paths ["src"]
  :deps {clojure-saxon {:mvn/version "0.9.4"
                        :exclusions [org.clojars.pjt/saxon9 org.clojars.pjt/saxon9-s9api]}
-        net.sf.saxon/Saxon-HE {:mvn/version "9.9.1-5"}}
+        net.sf.saxon/Saxon-HE {:mvn/version "9.9.1-5"}
+        org.clojure/data.json {:mvn/version "0.2.6"}}
  :aliases {:build {:main-opts ["-m clj.build-manual"]}}}

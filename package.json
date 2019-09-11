@@ -2,16 +2,22 @@
   "name": "csound-manual-react",
   "version": "1.0.0",
   "description": "",
-  "main": "lib/index.js",
+  "main": "dist/main.js",
   "scripts": {
+    "build": "webpack --devtool=source-map --mode development",
+    "release": "webpack --mode production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Hlöðver Sigurðsson",
   "license": "GPL-3.0-or-later",
   "dependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-react": "^6.24.1",
-    "react": "^16.9.0"
+    "@babel/core": "^7.6.0",
+    "@babel/preset-env": "^7.6.0",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.6",
+    "react": "^16.9.0",
+    "react-router-dom": "^5.0.1",
+    "webpack": "^4.39.3",
+    "webpack-cli": "^3.3.8"
   }
 }

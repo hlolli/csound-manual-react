@@ -1,5 +1,6 @@
 (ns clj.build-manual
   (:require [saxon :as xml]
+            [clojure.data.json :as json]
             [clojure.java.io :as io]
             [clojure.string :as string]))
 
@@ -74,12 +75,18 @@
   #{"top.xml" "topXO.xml" "splitrig.txt"
     "LinkMetro.xml"})
 
-(def index-js-prefix "export default {")
+(def index-js-prefix
+  (str "import React from 'react';\n"
+       "export default {\n"))
 (def index-js-suffix "}")
 
 (def xquery-jsx
   (xml/compile-xquery
    (slurp (io/file "xqueries/transformer.xqy"))))
+
+(def xquery-id
+  (xml/compile-xquery
+   (slurp (io/file "xqueries/id.xqy"))))
 
 (def xquery-synopsis
   (xml/compile-xquery
@@ -95,6 +102,19 @@
          (map #(.replace % "\\" ""))
          (map #(string/replace % #"\s+" " ")))))
 
+(defn remove-xml-comments [str]
+  (string/replace str #"(?s)<!--.*?-->" ""))
+
+(defn stringify-screens [str]
+  (-> str
+      (string/replace "<screen>" "<div className=\"manual-screen\">{`")
+      (string/replace "</screen>" "`}</div>")))
+
+(defn quote-curlies [str]
+  (-> str
+      (string/replace "{{" "{`{{")
+      (string/replace "}}" "}}`}")))
+
 (defn -main [& args]
   (let [opcodes-dir (rest (file-seq (io/file "manual/opcodes")))
         opcodes-dir (remove #(remove-xmls (.getName %)) opcodes-dir)
@@ -102,12 +122,25 @@
                                     (do (println "xml-compiling:" (.getName %))
                                         (xml-compiler %)) :file %) opcodes-dir)
         out-dir (io/file "tmp")]
-    (loop [[{:keys [parsed-xml file]} & rest] parsed-xmls
+    (loop [[{:keys [parsed-xml file]} & rest] (take 100 parsed-xmls)
            index-js ""]
-      (when rest
-        (let [filename (.replace (.getName file) ".xml" ".jsx")]
-          (prn (clean-synopsis (xquery-synopsis parsed-xml)))
+      (if-not rest
+        (spit (io/file out-dir "index.jsx")
+              (str index-js-prefix
+                   index-js
+                   index-js-suffix))
+        (let [filename (.replace (.getName file) ".xml" ".jsx")
+              modulename (.replace (.getName file) ".xml" "")
+              id (xquery-id parsed-xml)
+              synopsis (clean-synopsis (xquery-synopsis parsed-xml))
+              index-entry (str "\"" id "\": {synopsis: " (json/write-str synopsis) ","
+                               "component: React.lazy(() => import( /* webpackChunkName: '" modulename "' */'./" filename "')), "
+                               "},\n")]
           (spit (.getPath (io/file out-dir filename))
-                (xquery-jsx parsed-xml))
+                (-> parsed-xml
+                    xquery-jsx
+                    remove-xml-comments
+                    stringify-screens
+                    quote-curlies))
           (recur rest
-                 index-js))))))
+                 (str index-js "\n" index-entry)))))))
