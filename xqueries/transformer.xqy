@@ -44,6 +44,9 @@ let $n := "&#10;"
 let $title := //refentrytitle
 let $id := /refentry/@id
 let $purpose := //refpurpose
+(:
+ : let $synopsis := //synopsis
+ :)
 
 let $refsects :=
   for $refsect in //refsect1
@@ -55,10 +58,6 @@ let $refsects :=
        xs:QName('emphasis'), xs:QName('em'))
     (: insert included examples :)
     let $paratr3 := f:include-example($paratr2)
-    (:
-     : functx:change-element-names-deep($paratr2,
-     :    xs:QName('xi:include'), xs:QName('div'))
-     :)
     let $paratr4 := f:change-links($paratr3)
     let $paratr5 := f:change-programlisting($paratr4)
     let $paratr6 := f:change-informalexample($paratr5)
@@ -68,10 +67,18 @@ let $refsects :=
     let $paratr10 := f:change-simplelist($paratr9)
     let $paratr11 := f:change-itemizedlist($paratr10)
     let $paratr12 := f:change-listitem($paratr11)
-    return <div className="manual-para">{$paratr12}</div>
+    let $paratr13 := f:change-command($paratr12)
+    let $paratr14 := f:change-synopsis($paratr13)
+    let $paratr15 := f:change-literallayout($paratr14)
+    return <div className="manual-para">{$paratr15}</div>
+  let $s := for $synop in $refsect/synopsis
+    let $synoptr1 := f:change-command($synop)
+    let $synoptr2 := f:change-synopsis($synoptr1)
+    return <div className="manual-synopsis-container">{$synoptr2}</div>
   return
   <div className="manual-refsect1">
    <h1>{string($refsect/title[1])}</h1>
+   {$s}
    {$p}
   </div>
 
@@ -87,16 +94,18 @@ let $jsx :=
   </div>
 
 return string(
-"import React from 'react';" || $n ||
-"import { BrowserRouter, Link, withRouter } from 'react-router-dom';"  || $n ||
+'import React from "react";' || $n ||
+'import { Link, withRouter } from "react-router-dom";'  || $n ||
+'import SyntaxHighlighter from "react-syntax-highlighter";' || $n ||
+"import unescape from 'unescape';" || $n ||
 $n ||
 "class " || $id || "Class" || " extends React.Component {" || $n ||
 " render () {" || $n ||
-"  return (<BrowserRouter> " || fn:serialize($jsx) || "</BrowserRouter>);" || $n ||
+"  return ( " || fn:serialize($jsx) || ");" || $n ||
 "  }" || $n ||
 "}" || $n ||
-"export default " || $id || "Class;"
 (:
- : "export default withRouter(" || $id || "Class" || ");"
+ : "export default " || $id || "Class;"
  :)
+"export default withRouter(" || $id || "Class" || ");"
 )

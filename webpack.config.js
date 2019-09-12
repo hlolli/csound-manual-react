@@ -1,11 +1,16 @@
 const path = require("path");
 const webpack = require("webpack");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 module.exports = {
-  entry: "./tmp/index.jsx",
+  entry: {
+    main: "./tmp/index.jsx",
+    synopsis: "./tmp/synopsis.jsx"
+  },
   output: {
     libraryExport: "default",
-    libraryTarget: "umd"
+    libraryTarget: "umd",
+    path: __dirname + "/lib/manual"
   },
   optimization: {
     namedModules: true,
@@ -53,11 +58,15 @@ module.exports = {
       commonjs2: "react-router-dom",
       amd: "ReactRouterDOM",
       root: "ReactRouterDOM"
+    },
+    "react-syntax-highlighter": {
+      commonjs: "react-syntax-highlighter",
+      commonjs2: "react-syntax-highlighter"
+    },
+    unescape: {
+      commonjs: "unescape",
+      commonjs2: "unescape"
     }
   },
-  plugins: [
-    new webpack.optimize.LimitChunkCountPlugin({
-      maxChunks: 1
-    })
-  ]
+  plugins: [new CleanWebpackPlugin()]
 };

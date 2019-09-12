@@ -1,6 +1,7 @@
 *~
 tmp
 dist
+lib
 node_modules
 yarn.lock
 .cpcache

@@ -1,5 +1,6 @@
 xquery version "1.0";
 module namespace f = "https://www.github.com/hlolli";
+declare namespace saxon="http://saxon.sf.net/";
 declare namespace xs = "http://www.w3.org/2001/XMLSchema";
 declare namespace xi="http://www.w3.org/2001/XInclude";
 
@@ -178,9 +179,28 @@ declare function f:change-simplelist
           else $node
  };
 
-declare function f:include-example
+declare function f:change-command
   ( $nodes as node()*)  as node()* {
-  let $oldName := xs:QName('xi:include')
+  let $oldName := xs:QName('command')
+  let $newName := xs:QName('span')
+  for $node in $nodes
+   return if ($node instance of element())
+          then element
+                 {if (node-name($node) = $oldName)
+                      then $newName
+                      else node-name($node) }
+                 {if (node-name($node) = $oldName)
+                      then attribute {"className"} {"manual-command"}
+                      else $node/@*,
+                  f:change-command($node/node())}
+          else if ($node instance of document-node())
+          then f:change-command($node/node())
+          else $node
+ };
+
+declare function f:change-synopsis
+  ( $nodes as node()*)  as node()* {
+  let $oldName := xs:QName('synopsis')
   let $newName := xs:QName('pre')
   for $node in $nodes
    return if ($node instance of element())
@@ -189,12 +209,52 @@ declare function f:include-example
                       then $newName
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
-                      then attribute {"className"} {"manual-example-code"}
+                      then attribute {"className"} {"manual-synopsis"}
+                      else $node/@*,
+                  f:change-synopsis($node/node())}
+          else if ($node instance of document-node())
+          then f:change-synopsis($node/node())
+          else $node
+ };
+
+
+declare function f:include-example
+  ( $nodes as node()*)  as node()* {
+  let $oldName := xs:QName('xi:include')
+  let $newName := xs:QName('SyntaxHighlighter')
+  for $node in $nodes
+   return if ($node instance of element())
+          then element
+                 {if (node-name($node) = $oldName)
+                      then $newName
+                      else node-name($node) }
+                 {if (node-name($node) = $oldName)
+                      then (attribute {"className"} {"manual-example-code"},
+                            attribute {"language"} {"Caché Object Script"})
                       else $node/@*,
                   if (node-name($node) = $oldName)
-                      then "{`" || fn:unparsed-text(replace(concat("../manual/", $node/@href), ".xml", ""), "UTF-8") || "`}"
+                      then "{unescape(`" || replace(fn:string(fn:unparsed-text(replace(concat("../manual/", $node/@href), ".xml", ""))), "\\", "\\\\") || "`)}"
                       else f:include-example($node/node())}
           else if ($node instance of document-node())
           then f:include-example($node/node())
+          else $node
+ };
+
+declare function f:change-literallayout
+  ( $nodes as node()*)  as node()* {
+  let $oldName := xs:QName('literallayout')
+  let $newName := xs:QName('div')
+  for $node in $nodes
+   return if ($node instance of element())
+          then element
+                 {if (node-name($node) = $oldName)
+                      then $newName
+                      else node-name($node) }
+                 {if (node-name($node) = $oldName)
+                      then attribute {"className"} {"manual-literallayout"}
+                      else $node/@*,
+                  f:change-literallayout($node/node())}
+          else if ($node instance of document-node())
+          then f:change-literallayout($node/node())
           else $node
  };
