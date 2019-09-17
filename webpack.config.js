@@ -63,6 +63,10 @@ module.exports = {
       commonjs: "react-syntax-highlighter",
       commonjs2: "react-syntax-highlighter"
     },
+    "react-debounce-input": {
+      commonjs: "react-debounce-input",
+      commonjs2: "react-debounce-input"
+    },
     unescape: {
       commonjs: "unescape",
       commonjs2: "unescape"

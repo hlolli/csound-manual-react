@@ -5,3 +5,5 @@ deps.edn
 src
 resources
 xqueries
+manual
+yarn.lock

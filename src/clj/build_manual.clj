@@ -97,11 +97,12 @@
 "))
 
 (def index-js-suffix
-  (str "   <Route component={() => <h1>404 not found</h1>} />
-          </Switch>
-         </Suspense>
-        </Router>
-    );
+  (str "    <Route path='/manual' exact component={React.lazy(() => import( /* webpackChunkName: 'manual_main' */'./manual_main.jsx'))} />
+          <Route component={() => <h1>404 not found</h1>} />
+         </Switch>
+        </Suspense>
+       </Router>
+       );
   }
 }\n"
        "export default ManualIndex;"))
@@ -122,6 +123,10 @@
   (xml/compile-xquery
    (slurp (io/file "xqueries/synopsis.xqy"))))
 
+(def xquery-short-desc
+  (xml/compile-xquery
+   (slurp (io/file "xqueries/short.xqy"))))
+
 (defn clean-synopsis [synopsis]
   (let [;; ensure vec
         synopsis (if (string? synopsis)
@@ -131,6 +136,19 @@
          (map #(.replace % "\t" " "))
          (map #(.replace % "\\" ""))
          (map #(string/replace % #"\s+" " ")))))
+
+(defn clean-short-desc [short-desc]
+  (let [;; ensure vec
+        short-desc (if (string? short-desc)
+                     [short-desc] (vec short-desc))]
+    (->> short-desc
+         (map #(.replace % "\n" ""))
+         (map #(.replace % "\t" " "))
+         (map #(.replace % "\\" ""))
+         (map #(.replace % "'" "\\'"))
+         (map #(string/replace % #"\s+" " "))
+         (string/join " ")
+         string/trim)))
 
 (defn remove-xml-comments [str]
   (string/replace str #"(?s)<!--.*?-->" ""))
@@ -146,18 +164,24 @@
       (string/replace "</quote>" "”")))
 
 
+(def manual-main
+  (slurp "resources/manual_main.jsx"))
+
 (defn -main [& args]
   (let [opcodes-dir (rest (file-seq (io/file "manual/opcodes")))
         opcodes-dir (remove #(remove-xmls (.getName %)) opcodes-dir)
         parsed-xmls (map #(hash-map :parsed-xml
                                     (do (println "xml-compiling:" (.getName %))
-                                        (xml-compiler %)) :file %) opcodes-dir)
+                                        (xml-compiler %)) :file %
+                                    :type :opcode) opcodes-dir)
         out-dir (io/file "tmp")]
-    (loop [[{:keys [parsed-xml file]} & rest]
+    (loop [[{:keys [parsed-xml file type]} & rest]
+           (sort-by #(.getName (:file %)) (into [] parsed-xmls))
            ;; (into [] parsed-xmls)
-           (sort-by #(.getName (:file %)) (take 40 parsed-xmls))
+           ;; (sort-by #(.getName (:file %)) (take 40 parsed-xmls))
            index-js ""
-           synopsis-js ""]
+           synopsis-js ""
+           main-js ""]
       (if-not rest
         (do (spit (io/file out-dir "index.jsx")
                   (str index-js-prefix
@@ -167,6 +191,8 @@
                   (str "export default {\n"
                        synopsis-js
                        "\n }"))
+            (spit (io/file out-dir "manual_main.jsx")
+                  (format manual-main main-js))
             (io/copy (io/file "resources/styles.jsx")
                      (io/file out-dir "styles.jsx")))
         (let [filename (.replace (.getName file) ".xml" ".jsx")
@@ -174,15 +200,17 @@
               opname (xquery-opname parsed-xml)
               id (xquery-id parsed-xml)
               synopsis (clean-synopsis (xquery-synopsis parsed-xml))
+              short-desc (clean-short-desc (xquery-short-desc parsed-xml))
               index-entry (str (format "<Route path='/manual/%s' component={%s} />\n"
                                        ;; (StringEscapeUtils/escapeHtml4 opname)
-                                       (if (#{"*"} opname) modulename opname)
+                                       (if (#{"*" "/"} opname) modulename opname)
                                        (str "React.lazy(() => import( /* webpackChunkName: '" modulename "' */'./" filename "'))"))
                                (when (and (not= id opname) (not= "/" opname))
                                  ;; (prn id opname)
                                  (format "<Route path='/manual/%s' component={%s} />\n"
                                          id
                                          (str "React.lazy(() => import( /* webpackChunkName: '" modulename "' */'./" filename "'))"))))
+              main-entry (format "{name: '%s', url: '/manual/%s', short: '%s'},\n" opname modulename short-desc)
               synopsis-entry (str "\"" opname "\": " (json/write-str synopsis) ",")]
           (spit (.getPath (io/file out-dir filename))
                 (-> parsed-xml
@@ -196,4 +224,5 @@
                     ))
           (recur rest
                  (str index-js "\n" index-entry)
-                 (str synopsis-js "\n" synopsis-entry)))))))
+                 (str synopsis-js "\n" synopsis-entry)
+                 (str main-js main-entry)))))))
