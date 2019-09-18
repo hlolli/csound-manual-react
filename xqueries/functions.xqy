@@ -141,6 +141,25 @@ declare function f:change-itemizedlist
           else $node
  };
 
+declare function f:change-orderedlist
+  ( $nodes as node()*)  as node()* {
+  let $oldName := xs:QName('orderedlist')
+  let $newName := xs:QName('ol')
+  for $node in $nodes
+   return if ($node instance of element())
+          then element
+                 {if (node-name($node) = $oldName)
+                      then $newName
+                      else node-name($node) }
+                 {if (node-name($node) = $oldName)
+                      then attribute {"className"} {"manual-orderedlist"}
+                      else $node/@*,
+                  f:change-orderedlist($node/node())}
+          else if ($node instance of document-node())
+          then f:change-orderedlist($node/node())
+          else $node
+ };
+
 declare function f:change-listitem
   ( $nodes as node()*)  as node()* {
   let $oldName := xs:QName('listitem')
@@ -198,6 +217,25 @@ declare function f:change-command
           else $node
  };
 
+declare function f:change-title
+  ( $nodes as node()*)  as node()* {
+  let $oldName := xs:QName('title')
+  let $newName := xs:QName('h3')
+  for $node in $nodes
+   return if ($node instance of element())
+          then element
+                 {if (node-name($node) = $oldName)
+                      then $newName
+                      else node-name($node) }
+                 {if (node-name($node) = $oldName)
+                      then attribute {"className"} {"manual-title-elem"}
+                      else $node/@*,
+                  f:change-title($node/node())}
+          else if ($node instance of document-node())
+          then f:change-title($node/node())
+          else $node
+ };
+
 declare function f:change-synopsis
   ( $nodes as node()*)  as node()* {
   let $oldName := xs:QName('synopsis')
@@ -217,11 +255,14 @@ declare function f:change-synopsis
           else $node
  };
 
+(:
+ : "{unescape(`" || replace(fn:string(fn:unparsed-text(replace(concat("../manual/", $node/@href), ".xml", ""))), "\\", "\\\\") || "`)}"
+ :)
 
 declare function f:include-example
   ( $nodes as node()*)  as node()* {
   let $oldName := xs:QName('xi:include')
-  let $newName := xs:QName('SyntaxHighlighter')
+  let $newName := xs:QName('ManualEditor')
   for $node in $nodes
    return if ($node instance of element())
           then element
@@ -230,10 +271,10 @@ declare function f:include-example
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
                       then (attribute {"className"} {"manual-example-code"},
-                            attribute {"language"} {"Caché Object Script"})
+                            attribute {"value"} {replace(fn:unparsed-text(replace(concat("../manual/", $node/@href), ".xml", "")), "&#xA;", "&#xD;")})
                       else $node/@*,
                   if (node-name($node) = $oldName)
-                      then "{unescape(`" || replace(fn:string(fn:unparsed-text(replace(concat("../manual/", $node/@href), ".xml", ""))), "\\", "\\\\") || "`)}"
+                      then ""
                       else f:include-example($node/node())}
           else if ($node instance of document-node())
           then f:include-example($node/node())

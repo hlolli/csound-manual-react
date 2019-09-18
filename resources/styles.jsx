@@ -53,13 +53,13 @@ const common = `
 }
 
 .manual-main-entry {
-   font-size: 16px;
-   display: flex;
+   display: block;
+   font-size: 14px;
    text-decoration: none;
+   margin: 3px 0;
 }
 
 .manual-main-entry:hover {
-   font-size: 16px;
    background-color: rgba(255,255,255,0.5);
 }
 
@@ -71,7 +71,7 @@ const common = `
 .manual-main-entry p {
   padding: 0;
   margin: 0;
-  display: inline-block;
+  display: initial;
 }
 
 .manual-main-opcode-container {

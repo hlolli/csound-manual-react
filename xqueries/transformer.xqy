@@ -66,11 +66,13 @@ let $refsects :=
     let $paratr9 := f:change-member($paratr8)
     let $paratr10 := f:change-simplelist($paratr9)
     let $paratr11 := f:change-itemizedlist($paratr10)
-    let $paratr12 := f:change-listitem($paratr11)
-    let $paratr13 := f:change-command($paratr12)
-    let $paratr14 := f:change-synopsis($paratr13)
-    let $paratr15 := f:change-literallayout($paratr14)
-    return <div className="manual-para">{$paratr15}</div>
+    let $paratr12 := f:change-orderedlist($paratr11)
+    let $paratr13 := f:change-listitem($paratr12)
+    let $paratr14 := f:change-command($paratr13)
+    let $paratr15 := f:change-title($paratr14)
+    let $paratr16 := f:change-synopsis($paratr15)
+    let $paratr17 := f:change-literallayout($paratr16)
+    return <div className="manual-para">{$paratr17}</div>
   let $s := for $synop in $refsect/synopsis
     let $synoptr1 := f:change-command($synop)
     let $synoptr2 := f:change-synopsis($synoptr1)
@@ -96,7 +98,7 @@ let $jsx :=
 return string(
 'import React from "react";' || $n ||
 'import { Link, withRouter } from "react-router-dom";'  || $n ||
-'import SyntaxHighlighter from "react-syntax-highlighter";' || $n ||
+'import ManualEditor from "./manual_editor.jsx";' || $n ||
 "import unescape from 'unescape';" || $n ||
 $n ||
 "class " || $id || "Class" || " extends React.Component {" || $n ||

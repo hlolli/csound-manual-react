@@ -1,6 +1,6 @@
 {
   "name": "csound-manual-react",
-  "version": "1.0.0-alpha2",
+  "version": "1.0.0-alpha3",
   "description": "",
   "main": "lib/manual/main.js",
   "scripts": {
@@ -21,7 +21,6 @@
     "react": "^16.9.0",
     "react-debounce-input": "^3.2.0",
     "react-router-dom": "^5.0.1",
-    "react-syntax-highlighter": "^11.0.2",
     "unescape": "^1.0.1",
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.8"

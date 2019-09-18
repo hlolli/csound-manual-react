@@ -59,18 +59,22 @@ module.exports = {
       amd: "ReactRouterDOM",
       root: "ReactRouterDOM"
     },
-    "react-syntax-highlighter": {
-      commonjs: "react-syntax-highlighter",
-      commonjs2: "react-syntax-highlighter"
+    "react-codemirror2": {
+      commonjs: "react-codemirror2",
+      commonjs2: "react-codemirror2"
     },
     "react-debounce-input": {
       commonjs: "react-debounce-input",
       commonjs2: "react-debounce-input"
     },
-    unescape: {
-      commonjs: "unescape",
-      commonjs2: "unescape"
+    "react-perfect-scrollbar": {
+      commonjs: "react-perfect-scrollbar",
+      commonjs2: "react-perfect-scrollbar"
     }
+    // unescape: {
+    //     commonjs: "unescape",
+    //     commonjs2: "unescape"
+    // }
   },
   plugins: [new CleanWebpackPlugin()]
 };
