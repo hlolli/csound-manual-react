@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from "react-router-dom";
 import { DebounceInput } from "react-debounce-input";
+// import { FixedSizeList as List } from 'react-window';
+// import { VariableSizeList as List } from 'react-window';
 import Fuse from "fuse.js";
 
 const opcodes = [%s];
@@ -65,7 +67,6 @@ class ManualMain extends React.Component {
     }
 
     render() {
-
         const opcodesComp = this.state.opcodes.map((opc, index) => {
             return (
                 <Link key={index} to={opc.url} className="manual-main-entry">

@@ -82,26 +82,92 @@
   #{"top.xml" "topXO.xml" "splitrig.txt"
     "LinkMetro.xml" "template.xml"})
 
+(def loading-spinner
+  "From: https://loading.io/css/"
+  "<div style={{height: '100vh', width: '100vw', display: 'flex', justifyContents: 'space-around', alignContents: 'center'}}><style>{`.lds-ring {
+  display: inline-block;
+  position: relative;
+  width: 64px;
+  height: 64px;
+  }
+  .lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 51px;
+  height: 51px;
+  margin: 6px;
+  border: 6px solid #fff;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #fff transparent transparent transparent;
+  }
+  .lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+  }
+  .lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+  }
+  .lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+  }
+  @keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+  }
+  `}</style>
+  <div className='lds-ring'><div></div><div></div><div></div><div></div></div></div>")
+
 (def index-js-prefix
   (str "import React, { Component, Suspense, lazy } from 'react';\n"
        "import { Redirect } from 'react-router';"
        "import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';\n"
        "import Styles from './styles.jsx';\n"
+       (format "const loadingSpinner = %s;\n" loading-spinner)
        "class ManualIndex extends Component {
+             constructor(props) {
+               super(props);
+               this.routerRef = React.createRef();
+               this.handleIframeMessage = this.handleIframeMessage.bind(this);
+           }
+          shouldComponentUpdate(nextProps, nextState) {
+             if ((Object.entries(nextProps).length === 0) && !nextState) {
+               return false;
+             } else {
+               return true;
+             }
+          }
+          handleIframeMessage(data) {
+            let history;
+            try {
+              history = this.routerRef.current.history;
+            } catch (e) {}
+           if ((typeof data.data === 'string') && (data.data.length > 0) && history) {
+             history.push('/manual/' + data.data);
+           }
+          }
+          componentWillUnmount() { window.removeEventListener('message', this.handleIframeMessage); }
+          componentDidMount() { window.addEventListener('message', this.handleIframeMessage); }
           render() {
             return (
-              <Router>
+              <Router ref={this.routerRef}>
                 <Styles />
-                <Suspense fallback={<div>Loading...</div>}>
-                 <Switch>
-"))
+                "
+       "<Suspense fallback={loadingSpinner}>"
+       "
+       <Switch>"
+       ))
 
 (def index-js-suffix
-  (str "    <Route path='/manual/main' component={React.lazy(() => import( /* webpackChunkName: 'manual_main' */'./manual_main.jsx'))} />
-           <Route path='/manual' exact component={React.lazy(() => import( /* webpackChunkName: 'manual_main' */'./manual_main.jsx'))} />
-          <Route component={() => <h1>404 not found</h1>} />
-         </Switch>
-        </Suspense>
+  (str "    <Route path='/manual/main' component={React.lazy(() => import(/* webpackChunkName: 'manual_main' */'./manual_main.jsx'))} />
+        <Route path='/manual' exact component={React.lazy(() => import( /* webpackChunkName: 'manual_main' */'./manual_main.jsx'))} />
+        <Route component={() => <h1>404 not found</h1>} />
+       </Switch>
+       </Suspense>
        </Router>
        );
   }
