@@ -97,7 +97,8 @@
 "))
 
 (def index-js-suffix
-  (str "    <Route path='/manual' exact component={React.lazy(() => import( /* webpackChunkName: 'manual_main' */'./manual_main.jsx'))} />
+  (str "    <Route path='/manual/main' component={React.lazy(() => import( /* webpackChunkName: 'manual_main' */'./manual_main.jsx'))} />
+           <Route path='/manual' exact component={React.lazy(() => import( /* webpackChunkName: 'manual_main' */'./manual_main.jsx'))} />
           <Route component={() => <h1>404 not found</h1>} />
          </Switch>
         </Suspense>
