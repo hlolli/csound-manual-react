@@ -12,6 +12,11 @@ const common = `
     width: calc(100vw - 32px)!important;
 }
 
+  .manual-header a:hover {
+   text-decoration: underline;
+   cursor: pointer;
+}
+
   a {
     color: rgba(255,255,255,0.9);
   }

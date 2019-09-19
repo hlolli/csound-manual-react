@@ -84,7 +84,7 @@
 
 (def loading-spinner
   "From: https://loading.io/css/"
-  "<div style={{height: '100vh', width: '100vw', display: 'flex', justifyContents: 'space-around', alignContents: 'center'}}><style>{`.lds-ring {
+  "<div style={{height: '100vh', width: '100vw', display: 'flex', justifyContent: 'space-around', alignContents: 'center'}}><style>{`.lds-ring {
   display: inline-block;
   position: relative;
   width: 64px;
@@ -154,6 +154,13 @@
           componentDidMount() { window.addEventListener('message', this.handleIframeMessage); }
           render() {
             return (
+             <div>
+              <div style={{display: 'flex', justifyContent: 'space-between', marginTop: 17}} className='manual-header'>
+                <a onClick={() => this.routerRef.current.history.goBack()}>Back</a>
+                <a onClick={() => this.routerRef.current.history.push('/manual/main')}>Home</a>
+                <a onClick={() => this.routerRef.current.history.goForward()}>Forward</a>
+              </div>
+              <hr />
               <Router ref={this.routerRef}>
                 <Styles />
                 "
@@ -169,6 +176,7 @@
        </Switch>
        </Suspense>
        </Router>
+       </div>
        );
   }
 }\n"
@@ -280,7 +288,7 @@
                                          id
                                          (str "React.lazy(() => import( /* webpackChunkName: '" modulename "' */'./" filename "'))"))))
               main-entry (format "{name: '%s', url: '/manual/%s', short: '%s'},\n" opname modulename short-desc)
-              synopsis-entry (str "\"" opname "\": " (json/write-str synopsis) ",")]
+              synopsis-entry (str "\"" opname "\": {synopsis: " (json/write-str synopsis) ", id: " "'" id "'"  "},")]
           (spit (.getPath (io/file out-dir filename))
                 (-> parsed-xml
                     xquery-jsx
