@@ -275,7 +275,7 @@
         out-dir (io/file "tmp")]
     (loop [[{:keys [parsed-xml file type]} & rest]
            ;; (into (take 40 parsed-xmls)  parsed-scoregen-xmls)
-           (into [] parsed-xmls)
+           (into parsed-xmls parsed-scoregen-xmls)
            ;; (sort-by #(.getName (:file %)) (take 40 parsed-xmls))
            index-js ""
            synopsis-js ""
