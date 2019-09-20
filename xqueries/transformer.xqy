@@ -72,7 +72,20 @@ let $refsects :=
     let $paratr15 := f:change-title($paratr14)
     let $paratr16 := f:change-synopsis($paratr15)
     let $paratr17 := f:change-literallayout($paratr16)
-    return <div className="manual-para">{$paratr17}</div>
+    let $paratr18 := f:change-imagedata($paratr17)
+    let $paratr19 := f:change-textobject($paratr18)
+    let $paratr20 := f:change-phrase($paratr19)
+    let $paratr21 := f:change-caption($paratr20)
+    let $paratr22 := f:change-mediaobject($paratr21)
+    let $paratr23 := f:change-imageobject($paratr22)
+    let $paratr24 := f:change-informaltable($paratr23)
+    let $paratr25 := f:change-tgroup($paratr24)
+    let $paratr26 := f:change-row($paratr25)
+    let $paratr27 := f:change-entry($paratr26)
+    let $paratr28 := f:change-subscript($paratr27)
+    let $paratr29 := f:change-superscript($paratr28)
+
+    return <div className="manual-para">{$paratr29}</div>
   let $s := for $synop in $refsect/synopsis
     let $synoptr1 := f:change-command($synop)
     let $synoptr2 := f:change-synopsis($synoptr1)
@@ -102,6 +115,7 @@ return string(
 "import unescape from 'unescape';" || $n ||
 $n ||
 "class " || $id || "Class" || " extends React.Component {" || $n ||
+" componentDidMount () { document.scrollingElement.scrollTop = 0; }" || $n ||
 " render () {" || $n ||
 "  return ( " || fn:serialize($jsx) || ");" || $n ||
 "  }" || $n ||

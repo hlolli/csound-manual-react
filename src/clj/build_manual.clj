@@ -238,9 +238,24 @@
       (string/replace "<quote>" "“")
       (string/replace "</quote>" "”")))
 
+(defn quote-curlues [str modulename]
+  (if (or (= modulename "leftbrace") (= modulename "rightbrace"))
+    (-> str
+        (string/replace "<em>{" "<em>&#123;")
+        (string/replace "</em>}" "</em>&#125;")
+        (string/replace "{</em>" "&#123;</em>")
+        (string/replace "{ statement" "&#123; statement")
+        (string/replace "{ Statement" "&#123; Statement")
+        (string/replace "{</span>" "&#123;</span>")
+        (string/replace "} statement" "&#125; statement"))
+    str))
+
 
 (def manual-main
   (slurp "resources/manual_main.jsx"))
+
+(defn scoregens []
+  (let []))
 
 (defn -main [& args]
   (let [opcodes-dir (rest (file-seq (io/file "manual/opcodes")))
@@ -249,10 +264,18 @@
                                     (do (println "xml-compiling:" (.getName %))
                                         (xml-compiler %)) :file %
                                     :type :opcode) opcodes-dir)
+        parsed-xmls (sort-by #(.getName (:file %)) (into [] parsed-xmls))
+        scoregen-dir (rest (file-seq (io/file "manual/scoregens")))
+        scoregen-dir (remove #(remove-xmls (.getName %)) scoregen-dir)
+        parsed-scoregen-xmls (map #(hash-map :parsed-xml
+                                             (do (println "xml-compiling:" (.getName %))
+                                                 (xml-compiler %)) :file %
+                                             :type :scoregen) scoregen-dir)
+        parsed-scoregen-xmls (sort-by #(.getName (:file %)) (into [] parsed-scoregen-xmls))
         out-dir (io/file "tmp")]
     (loop [[{:keys [parsed-xml file type]} & rest]
-           (sort-by #(.getName (:file %)) (into [] parsed-xmls))
-           ;; (into [] parsed-xmls)
+           ;; (into (take 40 parsed-xmls)  parsed-scoregen-xmls)
+           (into [] parsed-xmls)
            ;; (sort-by #(.getName (:file %)) (take 40 parsed-xmls))
            index-js ""
            synopsis-js ""
@@ -275,6 +298,17 @@
         (let [filename (.replace (.getName file) ".xml" ".jsx")
               modulename (.replace (.getName file) ".xml" "")
               opname (xquery-opname parsed-xml)
+              opname (if (= :scoregen type)
+                       (-> opname
+                           (string/replace " statement" "")
+                           (string/replace "function table" "f")
+                           (string/replace "advance" "a")
+                           (string/replace "tempo" "t")
+                           (string/replace "repeat" "r")
+                           (string/replace "mark" "m")
+                           (string/replace "denote" "d")
+                           (string/replace "note" "i"))
+                       opname)
               id (xquery-id parsed-xml)
               synopsis (clean-synopsis (xquery-synopsis parsed-xml))
               short-desc (clean-short-desc (xquery-short-desc parsed-xml))
@@ -287,14 +321,15 @@
                                  (format "<Route path='/manual/%s' component={%s} />\n"
                                          id
                                          (str "React.lazy(() => import( /* webpackChunkName: '" modulename "' */'./" filename "'))"))))
-              main-entry (format "{name: '%s', url: '/manual/%s', short: '%s'},\n" opname modulename short-desc)
-              synopsis-entry (str "\"" opname "\": {synopsis: " (json/write-str synopsis) ", id: " "'" id "'"  "},")]
+              main-entry (format "{name: '%s', url: '/manual/%s', short: '%s', type: '%s'},\n" opname modulename short-desc (name type))
+              synopsis-entry (str "\"" opname "\": {synopsis: " (json/write-str synopsis) ", id: " "'" id "'" ", type: " "'" (name type) "'"  "},")]
           (spit (.getPath (io/file out-dir filename))
                 (-> parsed-xml
                     xquery-jsx
                     remove-xml-comments
                     stringify-screens
                     replace-quote-tags
+                    (quote-curlues modulename)
                     ;; (quote-double-curlies modulename)
                     ;; simple-unescape
                     ;; StringEscapeUtils/unescapeHtml4

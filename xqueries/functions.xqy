@@ -299,3 +299,234 @@ declare function f:change-literallayout
           then f:change-literallayout($node/node())
           else $node
  };
+
+declare function f:change-imagedata
+  ( $nodes as node()*)  as node()* {
+  let $oldName := xs:QName('imagedata')
+  let $newName := xs:QName('img')
+  for $node in $nodes
+   return if ($node instance of element())
+          then element
+                 {if (node-name($node) = $oldName)
+                      then $newName
+                      else node-name($node) }
+                 {if (node-name($node) = $oldName)
+                      then attribute {"src"} {concat("http://www.csounds.com/manual/html/", $node/@fileref)}
+                      else $node/@*,
+                  if (node-name($node) = $oldName)
+                      then string-join($node, "")
+                      else f:change-imagedata($node/node())}
+          else if ($node instance of document-node())
+          then f:change-imagedata($node/node())
+          else $node
+ };
+
+declare function f:change-textobject
+  ( $nodes as node()*)  as node()* {
+  let $oldName := xs:QName('textobject')
+  let $newName := xs:QName('div')
+  for $node in $nodes
+   return if ($node instance of element())
+          then element
+                 {if (node-name($node) = $oldName)
+                      then $newName
+                      else node-name($node) }
+                 {if (node-name($node) = $oldName)
+                      then attribute {"className"} {"manual-textobject"}
+                      else $node/@*,
+                  f:change-textobject($node/node())}
+          else if ($node instance of document-node())
+          then f:change-textobject($node/node())
+          else $node
+ };
+
+declare function f:change-phrase
+  ( $nodes as node()*)  as node()* {
+  let $oldName := xs:QName('phrase')
+  let $newName := xs:QName('p')
+  for $node in $nodes
+   return if ($node instance of element())
+          then element
+                 {if (node-name($node) = $oldName)
+                      then $newName
+                      else node-name($node) }
+                 {if (node-name($node) = $oldName)
+                      then attribute {"className"} {"manual-phrase"}
+                      else $node/@*,
+                  f:change-phrase($node/node())}
+          else if ($node instance of document-node())
+          then f:change-phrase($node/node())
+          else $node
+ };
+
+declare function f:change-caption
+  ( $nodes as node()*)  as node()* {
+  let $oldName := xs:QName('caption')
+  let $newName := xs:QName('div')
+  for $node in $nodes
+   return if ($node instance of element())
+          then element
+                 {if (node-name($node) = $oldName)
+                      then $newName
+                      else node-name($node) }
+                 {if (node-name($node) = $oldName)
+                      then attribute {"className"} {"manual-caption"}
+                      else $node/@*,
+                  f:change-caption($node/node())}
+          else if ($node instance of document-node())
+          then f:change-caption($node/node())
+          else $node
+ };
+
+declare function f:change-mediaobject
+  ( $nodes as node()*)  as node()* {
+  let $oldName := xs:QName('mediaobject')
+  let $newName := xs:QName('div')
+  for $node in $nodes
+   return if ($node instance of element())
+          then element
+                 {if (node-name($node) = $oldName)
+                      then $newName
+                      else node-name($node) }
+                 {if (node-name($node) = $oldName)
+                      then attribute {"className"} {"manual-mediaobject"}
+                      else $node/@*,
+                  f:change-mediaobject($node/node())}
+          else if ($node instance of document-node())
+          then f:change-mediaobject($node/node())
+          else $node
+ };
+
+declare function f:change-imageobject
+  ( $nodes as node()*)  as node()* {
+  let $oldName := xs:QName('imageobject')
+  let $newName := xs:QName('div')
+  for $node in $nodes
+   return if ($node instance of element())
+          then element
+                 {if (node-name($node) = $oldName)
+                      then $newName
+                      else node-name($node) }
+                 {if (node-name($node) = $oldName)
+                      then attribute {"className"} {"manual-imageobject"}
+                      else $node/@*,
+                  f:change-imageobject($node/node())}
+          else if ($node instance of document-node())
+          then f:change-imageobject($node/node())
+          else $node
+ };
+
+declare function f:change-informaltable
+  ( $nodes as node()*)  as node()* {
+  let $oldName := xs:QName('informaltable')
+  let $newName := xs:QName('div')
+  for $node in $nodes
+   return if ($node instance of element())
+          then element
+                 {if (node-name($node) = $oldName)
+                      then $newName
+                      else node-name($node) }
+                 {if (node-name($node) = $oldName)
+                      then attribute {"className"} {"manual-informaltable"}
+                      else $node/@*,
+                  f:change-informaltable($node/node())}
+          else if ($node instance of document-node())
+          then f:change-informaltable($node/node())
+          else $node
+ };
+
+declare function f:change-tgroup
+  ( $nodes as node()*)  as node()* {
+  let $oldName := xs:QName('tgroup')
+  let $newName := xs:QName('table')
+  for $node in $nodes
+   return if ($node instance of element())
+          then element
+                 {if (node-name($node) = $oldName)
+                      then $newName
+                      else node-name($node) }
+                 {if (node-name($node) = $oldName)
+                      then (attribute {"className"} {"manual-tgroup"},
+                           attribute {"border"} {"1 solid white"})
+                      else $node/@*,
+                  f:change-tgroup($node/node())}
+          else if ($node instance of document-node())
+          then f:change-tgroup($node/node())
+          else $node
+ };
+
+declare function f:change-row
+  ( $nodes as node()*)  as node()* {
+  let $oldName := xs:QName('row')
+  let $newName := xs:QName('tr')
+  for $node in $nodes
+   return if ($node instance of element())
+          then element
+                 {if (node-name($node) = $oldName)
+                      then $newName
+                      else node-name($node) }
+                 {if (node-name($node) = $oldName)
+                      then attribute {"className"} {"manual-row"}
+                      else $node/@*,
+                  f:change-row($node/node())}
+          else if ($node instance of document-node())
+          then f:change-row($node/node())
+          else $node
+ };
+
+declare function f:change-entry
+  ( $nodes as node()*)  as node()* {
+  let $oldName := xs:QName('entry')
+  let $newName := xs:QName('td')
+  for $node in $nodes
+   return if ($node instance of element())
+          then element
+                 {if (node-name($node) = $oldName)
+                      then $newName
+                      else node-name($node) }
+                 {if (node-name($node) = $oldName)
+                      then attribute {"className"} {"manual-entry"}
+                      else $node/@*,
+                  f:change-entry($node/node())}
+          else if ($node instance of document-node())
+          then f:change-entry($node/node())
+          else $node
+ };
+
+declare function f:change-subscript
+  ( $nodes as node()*)  as node()* {
+  let $oldName := xs:QName('subscript')
+  let $newName := xs:QName('sub')
+  for $node in $nodes
+   return if ($node instance of element())
+          then element
+                 {if (node-name($node) = $oldName)
+                      then $newName
+                      else node-name($node) }
+                 {if (node-name($node) = $oldName)
+                      then attribute {"className"} {"manual-subscript"}
+                      else $node/@*,
+                  f:change-subscript($node/node())}
+          else if ($node instance of document-node())
+          then f:change-subscript($node/node())
+          else $node
+ };
+
+declare function f:change-superscript
+  ( $nodes as node()*)  as node()* {
+  let $oldName := xs:QName('superscript')
+  let $newName := xs:QName('sup')
+  for $node in $nodes
+   return if ($node instance of element())
+          then element
+                 {if (node-name($node) = $oldName)
+                      then $newName
+                      else node-name($node) }
+                 {if (node-name($node) = $oldName)
+                      then attribute {"className"} {"manual-superscript"}
+                      else $node/@*,
+                  f:change-superscript($node/node())}
+          else if ($node instance of document-node())
+          then f:change-superscript($node/node())
+          else $node
+ };

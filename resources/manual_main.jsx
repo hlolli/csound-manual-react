@@ -5,7 +5,23 @@ import { DebounceInput } from "react-debounce-input";
 // import { VariableSizeList as List } from 'react-window';
 import Fuse from "fuse.js";
 
-const opcodes = [%s];
+const db = [%s];
+const opcodes = db.filter(d => d.type === 'opcode');
+opcodes.sort(function(a, b){
+    var x = a.name.toLowerCase();
+    var y = b.name.toLowerCase();
+    if (x < y) {return -1;}
+    if (x > y) {return 1;}
+    return 0;
+});
+const scoregens = db.filter(d => d.type === 'scoregen');
+scoregens.sort(function(a, b){
+    var x = a.name.toLowerCase();
+    var y = b.name.toLowerCase();
+    if (x < y) {return -1;}
+    if (x > y) {return 1;}
+    return 0;
+});
 
 const filterOptions = {
     shouldSort: true,
@@ -27,7 +43,7 @@ class ManualMain extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {opcodes, filterString: ""};
+        this.state = {opcodes, scoregens, filterString: ""};
         this.onFilter = this.onFilter.bind(this);
         // this.scrollableBody = React.createRef();
     }
@@ -37,11 +53,15 @@ class ManualMain extends React.Component {
             this.props.history.replace(
                 this.props.history.location.pathname
             );
-            this.setState({...this.state, opcodes: opcodes, filterString: ""});
+            this.setState({...this.state, opcodes: opcodes, scoregens: scoregens, filterString: ""});
         } else {
-            const fuse = new Fuse(opcodes, filterOptions);
-            const result = fuse.search(filterString);
-            this.setState({...this.state, opcodes: result, filterString});
+            const fuse1 = new Fuse(opcodes, filterOptions);
+            const opcodeResult = fuse1.search(filterString);
+
+            const fuse2 = new Fuse(scoregens, filterOptions);
+            const scoregensResult = fuse2.search(filterString);
+
+            this.setState({...this.state, opcodes: opcodeResult, scoregens: scoregensResult, filterString});
             this.props.history.replace(
                 this.props.history.location.pathname + "#" + filterString
             );
@@ -78,6 +98,17 @@ class ManualMain extends React.Component {
             )
         });
 
+        const scoregensComp = this.state.scoregens.map((opc, index) => {
+            return (
+                <Link key={index} to={opc.url} className="manual-main-entry">
+                  <div className="manual-main-opcode-container">
+                    <span>{opc.name}</span>
+                  </div>
+                  <p>{opc.short}</p>
+                </Link>
+            )
+        });
+
         return (
             <div>
               <h1>The Canonical Csound Reference Manual</h1>
@@ -89,8 +120,10 @@ class ManualMain extends React.Component {
                 type="text" className="manual-main-form-control"
                 placeholder="Search by name or description"
                 />
-                <h2>III Reference</h2>
+                {(this.state.opcodes.length > 0) && <h2>Orchestra Opcodes and Operators</h2> }
                 {opcodesComp}
+                {(this.state.scoregens.length > 0) && <h2>Score Statements and GEN Routines</h2> }
+                {scoregensComp}
             </div>
         );
     }
