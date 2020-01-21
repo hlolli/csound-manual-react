@@ -69,7 +69,7 @@ class ManualMain extends React.Component {
     }
 
     componentWillUnmount() {
-        localStorage.setItem(
+        sessionStorage && sessionStorage.setItem(
             "manualmain:scrollpos",
             document.scrollingElement.scrollTop
         );
@@ -80,8 +80,8 @@ class ManualMain extends React.Component {
             this.onFilter(this.props.history.location.hash.substring(1));
         }
 
-        const lastCursorPos = localStorage.getItem("manualmain:scrollpos");
-        if (lastCursorPos.length > 0) {
+        const lastCursorPos = sessionStorage && sessionStorage.getItem("manualmain:scrollpos");
+        if (lastCursorPos && lastCursorPos.length > 0) {
             document.scrollingElement.scrollTop = Number(lastCursorPos)
         }
     }

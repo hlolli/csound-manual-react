@@ -153,6 +153,7 @@
           componentWillUnmount() { window.removeEventListener('message', this.handleIframeMessage); }
           componentDidMount() { window.addEventListener('message', this.handleIframeMessage); }
           render() {
+            const CodeMirrorPainter = this.props.codeMirrorPainter || <></>;
             return (
              <div>
               <div style={{display: 'flex', justifyContent: 'space-between', marginTop: 17}} className='manual-header'>
@@ -162,7 +163,8 @@
               </div>
               <hr />
               <Router ref={this.routerRef}>
-                <Styles />
+                <Styles theme={this.props.theme} />
+                <CodeMirrorPainter theme={this.props.theme} />
                 "
        "<Suspense fallback={loadingSpinner}>"
        "
@@ -250,6 +252,10 @@
         (string/replace "} statement" "&#125; statement"))
     str))
 
+(defn fix-pipes [str]
+  (-> str
+      (clojure.string/replace #"(?<!\|)(\|\|)(?![\|])" "|")
+      (clojure.string/replace #"(?<!\|)(\|\|\|\|)(?![\|])" "||")))
 
 (def manual-main
   (slurp "resources/manual_main.jsx"))
@@ -300,6 +306,7 @@
               opname (xquery-opname parsed-xml)
               opname (if (= :scoregen type)
                        (-> opname
+                           fix-pipes
                            (string/replace " statement" "")
                            (string/replace "function table" "f")
                            (string/replace "advance" "a")
@@ -329,6 +336,7 @@
                     remove-xml-comments
                     stringify-screens
                     replace-quote-tags
+                    fix-pipes
                     (quote-curlues modulename)
                     ;; (quote-double-curlies modulename)
                     ;; simple-unescape

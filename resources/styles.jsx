@@ -1,8 +1,13 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-const common = `
+const common = theme => `
+  body {
+     background-color: ${theme ? theme.background.primary : "black"};
+  }
   #root {
-    color: rgba(255,255,255,0.9);
+    top: 0;
+    background-color: ${theme ? theme.background.primary : "black"};
+    color: ${theme ? theme.color.primary : "white"};
     margin: 8px;
     font-weight: 100;
     letter-spacing: 1.2px;
@@ -12,28 +17,44 @@ const common = `
     width: calc(100vw - 32px)!important;
 }
 
+.scrollbar-container ps {
+   height: auto!important;
+}
+
+.CodeMirror {
+   height: auto!important;
+    font-size: 15px;
+}
+
   .manual-header a:hover {
    text-decoration: underline;
    cursor: pointer;
 }
 
   a {
-    color: rgba(255,255,255,0.9);
+    color: ${theme ? theme.color.primary : "white"};
   }
-  #title h1 {
+  h1 {
     font-weight: 500;
-    color: #999933;
+    color: ${theme ? theme.alternativeColor.primary : "white"};
     font-size: 36px;
 }
+
+  h2 {
+    font-weight: 500;
+    color: ${theme ? theme.alternativeColor.secondary : "white"};
+    font-size: 28px;
+}
+
   .manual-refsect1 h1 {
     font-weight: 100;
-    color: #999933;
+    color: ${theme ? theme.alternativeColor.primary : "white"};
 }
   .manual-synopsis {
     font-weight: 100;
     font-size: 14px;
     color: rgb(255,255,255);
-    background-color: #000000;
+    background-color: ${theme ? theme.highlight.primary : "black"};
     padding: 10px 2em;
 }
 
@@ -41,9 +62,15 @@ thead {
     font-weight: 700!important;
 }
  .manual-command {
-   color: #444480;
+   color: ${theme ? theme.opcode.primary : "white"};
    font-weight: 900;
 }
+
+.manual-logs {
+   background-color: ${theme ? theme.disabledColor.primary : "white"};
+   color: ${theme ? theme.headerBackground.secondary : "black"};
+}
+
 .manual-para {
    margin: 12px 0;
 }
@@ -59,13 +86,13 @@ thead {
 .manual-example-code {
     font-weight: 100;
     color: rgb(255,255,255);
-    background-color: #000000;
+    background-color: ${theme ? theme.highlight.primary : "black"};
     padding: 10px 2em;
 }
  .manual-screen {
     font-weight: 100;
-    color: rgb(255,255,255);
-    background-color: #000000;
+    color: ${theme ? theme.color.primary : "white"};
+    background-color: ${theme ? theme.highlight.primary : "black"};
     padding: 10px 2em;
 }
 
@@ -126,7 +153,7 @@ thead {
 }
 
 .manual-button-circle {
-  stroke: #f8aa28;
+  stroke: ${theme ? theme.button.secondary : "white"};
   stroke-dasharray: 650;
   stroke-dashoffset: 650;
   -webkit-transition: all 0.5s ease-in-out;
@@ -172,7 +199,7 @@ cursor: pointer;
 .manual-play-button:hover .manual-button-triangle {
       stroke-dashoffset: 0;
       opacity: 1;
-      stroke: #f8aa28;
+      stroke: ${theme ? theme.button.secondary : "white"};
       animation: nudge 0.7s ease-in-out;
 }
 
@@ -190,17 +217,13 @@ cursor: pointer;
     width: 900px;
 
 }
-
 `;
 
 class ManualStyles extends Component {
-    render() {
-        return (
-            <style>
-              {common}
-            </style>
-        )
-    }
+  render() {
+    const theme = this.props.theme;
+    return <style>{common(theme)}</style>;
+  }
 }
 
 export default ManualStyles;

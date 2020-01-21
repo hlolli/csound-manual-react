@@ -1,32 +1,32 @@
 {
   "name": "csound-manual-react",
-  "version": "1.0.0-alpha8",
+  "version": "1.0.0-alpha9",
   "description": "",
   "main": "lib/manual/main.js",
   "scripts": {
     "build": "webpack --mode production",
-    "build:dev": "webpack --devtool=source-map --mode development",
+    "build:watch": "webpack --devtool=source-map --mode development --watch",
     "release": "webpack --mode production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Hlöðver Sigurðsson",
   "license": "GPL-3.0-or-later",
   "dependencies": {
-    "@babel/core": "^7.6.0",
-    "@babel/preset-env": "^7.6.0",
-    "@babel/preset-react": "^7.0.0",
+    "@babel/core": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "@babel/preset-react": "^7.8.3",
     "babel-loader": "^8.0.6",
     "clean-webpack-plugin": "^3.0.0",
-    "fuse.js": "^3.4.5",
-    "react": "^16.9.0",
-    "react-debounce-input": "^3.2.0",
-    "react-router-dom": "^5.0.1",
+    "fuse.js": "^3.4.6",
+    "react": "^16.12.0",
+    "react-debounce-input": "^3.2.2",
+    "react-router-dom": "^5.1.2",
     "react-window": "^1.8.5",
     "unescape": "^1.0.1",
-    "webpack": "^4.39.3",
-    "webpack-cli": "^3.3.8"
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
   },
   "devDependencies": {
-    "copy-webpack-plugin": "^5.0.4"
+    "copy-webpack-plugin": "^5.1.1"
   }
 }
