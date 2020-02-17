@@ -2,20 +2,20 @@ import React, { Component } from "react";
 
 const common = theme => `
   body {
-     background-color: ${theme ? theme.background.primary : "black"};
+     background-color: ${theme ? theme.background : "black"};
   }
   #root {
     top: 0;
-    background-color: ${theme ? theme.background.primary : "black"};
-    color: ${theme ? theme.color.primary : "white"};
+    background-color: ${theme ? theme.background : "black"};
+    color: ${theme ? theme.textColor : "white"};
     margin: 8px;
     font-weight: 100;
     letter-spacing: 1.2px;
 }
 
-  #root > div {
-    width: calc(100vw - 32px)!important;
-}
+  // #root > div {
+  //   width: calc(100vw - 32px)!important;
+  // }
 
 .scrollbar-container ps {
    height: auto!important;
@@ -32,29 +32,29 @@ const common = theme => `
 }
 
   a {
-    color: ${theme ? theme.color.primary : "white"};
+    color: ${theme ? theme.textColor : "white"};
   }
   h1 {
     font-weight: 500;
-    color: ${theme ? theme.alternativeColor.primary : "white"};
+    color: ${theme ? theme.altTextColor : "white"};
     font-size: 36px;
 }
 
   h2 {
     font-weight: 500;
-    color: ${theme ? theme.alternativeColor.secondary : "white"};
+    color: ${theme ? theme.altTextColor : "white"};
     font-size: 28px;
 }
 
   .manual-refsect1 h1 {
     font-weight: 100;
-    color: ${theme ? theme.alternativeColor.primary : "white"};
+    color: ${theme ? theme.altTextColor : "white"};
 }
   .manual-synopsis {
     font-weight: 100;
     font-size: 14px;
     color: rgb(255,255,255);
-    background-color: ${theme ? theme.highlight.primary : "black"};
+    background-color: ${theme ? theme.highlightBackground : "black"};
     padding: 10px 2em;
 }
 
@@ -62,13 +62,13 @@ thead {
     font-weight: 700!important;
 }
  .manual-command {
-   color: ${theme ? theme.opcode.primary : "white"};
+   color: ${theme ? theme.opcode : "white"};
    font-weight: 900;
 }
 
 .manual-logs {
-   background-color: ${theme ? theme.disabledColor.primary : "white"};
-   color: ${theme ? theme.headerBackground.secondary : "black"};
+   background-color: ${theme ? theme.disabledTextColor : "white"};
+   color: ${theme ? theme.headerBackground : "black"};
 }
 
 .manual-para {
@@ -86,13 +86,13 @@ thead {
 .manual-example-code {
     font-weight: 100;
     color: rgb(255,255,255);
-    background-color: ${theme ? theme.highlight.primary : "black"};
+    background-color: ${theme ? theme.highlightBackground : "black"};
     padding: 10px 2em;
 }
  .manual-screen {
     font-weight: 100;
-    color: ${theme ? theme.color.primary : "white"};
-    background-color: ${theme ? theme.highlight.primary : "black"};
+    color: ${theme ? theme.textColor : "white"};
+    background-color: ${theme ? theme.highlightBackground : "black"};
     padding: 10px 2em;
 }
 
@@ -153,7 +153,7 @@ thead {
 }
 
 .manual-button-circle {
-  stroke: ${theme ? theme.button.secondary : "white"};
+  stroke: ${theme ? theme.buttonBackground : "white"};
   stroke-dasharray: 650;
   stroke-dashoffset: 650;
   -webkit-transition: all 0.5s ease-in-out;
@@ -199,7 +199,7 @@ cursor: pointer;
 .manual-play-button:hover .manual-button-triangle {
       stroke-dashoffset: 0;
       opacity: 1;
-      stroke: ${theme ? theme.button.secondary : "white"};
+      stroke: ${theme ? theme.altButtonBackground : "white"};
       animation: nudge 0.7s ease-in-out;
 }
 
