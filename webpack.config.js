@@ -13,6 +13,7 @@ module.exports = {
   output: {
     libraryExport: "default",
     libraryTarget: "umd",
+    publicPath: "/manual",
     path: destDir
   },
   optimization: {
