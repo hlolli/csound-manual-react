@@ -84,8 +84,9 @@ let $refsects :=
     let $paratr27 := f:change-entry($paratr26)
     let $paratr28 := f:change-subscript($paratr27)
     let $paratr29 := f:change-superscript($paratr28)
+    let $paratr30 := f:change-superscript($paratr29)
 
-    return <div className="manual-para">{$paratr29}</div>
+    return <div className="manual-para">{$paratr30}</div>
   let $s := for $synop in $refsect/synopsis
     let $synoptr1 := f:change-command($synop)
     let $synoptr2 := f:change-synopsis($synoptr1)

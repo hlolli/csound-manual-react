@@ -69,7 +69,7 @@ const assets = [
   "test1.png",
   "test2.png",
   "twopeaks.aiff",
-  "websocket.html"
+  "websocket.html",
 ];
 
 function get(asset) {
@@ -116,7 +116,7 @@ class ManualEditor extends React.Component {
           cs.writeToFS(r[0], r[1]);
         });
         cs.audioContext.resume();
-        cs.reset();
+        cs.resetIfNeeded();
         cs.setOption("-odac");
         cs.setOption("-+msg_color=false");
         cs.compileCSD(csd);
@@ -186,7 +186,7 @@ class ManualEditor extends React.Component {
             matchBrackets: true,
             viewportMargin: Infinity,
             readOnly: !insideIframe,
-            nocursor: !insideIframe
+            nocursor: !insideIframe,
           }}
           value={initVal}
         ></CodeMirror>

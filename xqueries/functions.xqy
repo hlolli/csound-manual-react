@@ -530,3 +530,22 @@ declare function f:change-superscript
           then f:change-superscript($node/node())
           else $node
  };
+
+declare function f:change-note
+  ( $nodes as node()*)  as node()* {
+  let $oldName := xs:QName('note')
+  let $newName := xs:QName('pre')
+  for $node in $nodes
+   return if ($node instance of element())
+          then element
+                 {if (node-name($node) = $oldName)
+                      then $newName
+                      else node-name($node) }
+                 {if (node-name($node) = $oldName)
+                      then attribute {"className"} {"manual-note"}
+                      else $node/@*,
+                  f:change-note($node/node())}
+          else if ($node instance of document-node())
+          then f:change-note($node/node())
+          else $node
+ };
