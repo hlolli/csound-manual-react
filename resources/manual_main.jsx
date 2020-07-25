@@ -55,11 +55,12 @@ class ManualMain extends React.Component {
             );
             this.setState({...this.state, opcodes: opcodes, scoregens: scoregens, filterString: ""});
         } else {
+
             const fuse1 = new Fuse(opcodes, filterOptions);
-            const opcodeResult = fuse1.search(filterString);
+            const opcodeResult = fuse1.search(filterString).map(i => i.item);
 
             const fuse2 = new Fuse(scoregens, filterOptions);
-            const scoregensResult = fuse2.search(filterString);
+            const scoregensResult = fuse2.search(filterString).map(i => i.item);
 
             this.setState({...this.state, opcodes: opcodeResult, scoregens: scoregensResult, filterString});
             this.props.history.replace(
@@ -87,7 +88,7 @@ class ManualMain extends React.Component {
     }
 
     render() {
-        const opcodesComp = this.state.opcodes.map((opc, index) => {
+      const opcodesComp = this.state.opcodes.map((opc, index) => {
             return (
                 <Link key={index} to={opc.url} className="manual-main-entry">
                   <div className="manual-main-opcode-container">
