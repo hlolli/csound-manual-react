@@ -116,8 +116,10 @@ return string(
 "import unescape from 'unescape';" || $n ||
 $n ||
 "class " || $id || "Class" || " extends React.Component {" || $n ||
+" constructor(props) { super(props); this.state = { currentExample: null }; this.setCurrentExample = this.setCurrentExample.bind(this); }" || $n ||
+" setCurrentExample (newExample) { this.setState({ currentExample: newExample }); }" || $n ||
 " componentDidMount () { document.scrollingElement.scrollTop = 0; }" || $n ||
-" render () {" || $n ||
+" render () { " || $n ||
 "  return ( " || fn:serialize($jsx) || ");" || $n ||
 "  }" || $n ||
 "}" || $n ||

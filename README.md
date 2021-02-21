@@ -1,4 +1,6 @@
-## WIP for the CsoundWebIDE
+## The Canonical Manual for the CsoundWebIDE
+
+(there's really not much other use for this npm package)
 
 ### Dependencies
 - react

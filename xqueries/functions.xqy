@@ -271,7 +271,17 @@ declare function f:include-example
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
                       then (attribute {"className"} {"manual-example-code"},
-                            attribute {"value"} {replace(fn:unparsed-text(replace(concat("../manual/", $node/@href), ".xml", "")), "&#xA;", "&#xD;")})
+                            attribute {"Csound"} {"{this.props.Csound}"},
+                            attribute {"currentExample"} {"{this.state.currentExample}"},
+                            attribute {"setCurrentExample"} {"{this.setCurrentExample}"},
+                            attribute {"theme"} {"{this.props.theme}"},
+                            attribute {"exampleName"} {$node/@href},
+                            attribute {"value"} {
+                              replace(
+                                fn:unparsed-text(
+                                  replace(
+                                    concat(environment-variable("src"), "/" || $node/@href), ".xml", "")
+                                  ), "&#xA;", "&#xD;")})
                       else $node/@*,
                   if (node-name($node) = $oldName)
                       then ""

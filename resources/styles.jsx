@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-const common = theme => `
+const common = (theme) => `
   body {
      background-color: ${theme ? theme.background : "black"};
   }
@@ -8,7 +8,7 @@ const common = theme => `
     top: 0;
     background-color: ${theme ? theme.background : "black"};
     color: ${theme ? theme.textColor : "white"};
-    margin: 8px;
+    padding: 8px;
     font-weight: 100;
     letter-spacing: 1.2px;
 }
@@ -26,7 +26,13 @@ const common = theme => `
     font-size: 15px;
 }
 
-  .manual-header a:hover {
+ .manual-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    overflow-x: hidden;
+}
+
+.manual-header a:hover {
    text-decoration: underline;
    cursor: pointer;
 }
@@ -37,13 +43,13 @@ const common = theme => `
   h1 {
     font-weight: 500;
     color: ${theme ? theme.altTextColor : "white"};
-    font-size: 36px;
+    font-size: 24px;
 }
 
   h2 {
     font-weight: 500;
     color: ${theme ? theme.altTextColor : "white"};
-    font-size: 28px;
+    font-size: 20px;
 }
 
   .manual-refsect1 h1 {
@@ -66,10 +72,88 @@ thead {
    font-weight: 900;
 }
 
+.flexible-modal {
+  position: fixed;
+  border: 1px solid #ccc;
+  background: white;
+  z-index: 1000;
+  padding-top: 12px;
+}
+.flexible-modal-mask {
+  position: fixed;
+  height: 100%;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  z-index: -1;
+}
+.flexible-modal-resizer {
+  position:absolute;
+  right: 12px;
+  bottom: 2px;
+  cursor:se-resize;
+  margin:5px;
+  border-bottom: solid 2px #333;
+  border-right: solid 2px #333;
+}
+.flexible-modal-drag-area{
+  height: 50px;
+  position:absolute;
+  right:0;
+  top:0;
+  cursor:move;
+}
+
+
 .manual-logs {
    background-color: ${theme ? theme.disabledTextColor : "white"};
-   color: ${theme ? theme.headerBackground : "black"};
+   color: ${theme ? theme.textColor : "white"};
+   width: 100%;
+   height: 100%;
+   overflow-y: scroll;
+   overflow-x: hidden;
+   padding: 0 12px;
+   margin: 0;
+   font-size: 12px;
+   white-space: pre-line;
+   box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2),
+        0px 4px 5px 0px rgba(0, 0, 0, 0.14),
+        0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+    scrollbar-width: thin;
+    scrollbar-color: ${theme.scrollbar} transparent;
 }
+
+.manual-logs::-webkit-scrollbar {
+  width: 8px;
+}
+
+.manual-logs:scrollbar-track,
+.manual-logs::-webkit-scrollbar-track {
+  background: transparent;
+}
+.manual-logs::-webkit-scrollbar-thumb {
+  background-color: ${theme.scrollbar};
+  width: 6px;
+  border-radius: 6px;
+  border: 3px solid transparent;
+}
+
+.manual-logs:hover {
+  scrollbar-color: ${theme.scrollbarHover};
+}
+
+.manual-logs::-webkit-scrollbar-thumb {
+            background-color: ${theme.scrollbarHover};
+            width: 6px;
+            border-radius: 6px;
+            border: 3px solid transparent;
+}
+
+.manual-logs::-webkit-scrollbar-track {
+  background: ${theme.highlightBackgroundAlt};
+}
+
 
 .manual-para {
    margin: 12px 0;
@@ -77,6 +161,10 @@ thead {
 
 .manual-caption {
   display: none;
+}
+
+.manual-example {
+  position: relative;
 }
 
 .manual-example .cm-s-monokai.CodeMirror,.CodeMirror-gutters {
@@ -146,11 +234,51 @@ thead {
 
 .manual-button-container {
   text-align: left;
-  display: inline-block;
+  display: flex;
   zoom: 33%;
   position: relative;
   margin: 60px 0;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 180px;
 }
+
+.copy-btn-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: absolute;
+    margin-top: 12px;
+    z-index: 100;
+    width: 72px;
+    right: 0;
+}
+
+.copy-btn {
+  width: 100%;
+  background-color: transparent;
+  background-image: none;
+  border: 1px solid ${theme ? theme.buttonBackground : "white"};
+  border-radius: 50%;
+  cursor: pointer;
+  margin-right: 12px;
+  padding: 6px;
+}
+
+.copy-btn svg {
+  fill: ${theme ? theme.buttonBackground : "white"};
+  stroke-dasharray: 650;
+  stroke-dashoffset: 650;
+  -webkit-transition: all 0.5s ease-in-out;
+  opacity: 0.3;
+}
+
+.copy-btn:hover svg {
+  -webkit-transition: all 0.5s ease-in-out;
+  fill: white;
+  opacity: 0.3;
+}
+
 
 .manual-button-circle {
   stroke: ${theme ? theme.buttonBackground : "white"};
@@ -188,10 +316,9 @@ thead {
 }
 
 .manual-play-button {
-width: 50px;
-height: 50px;
+width: 50%;
+height: 100%;
 cursor: pointer;
-/*  border: 1px solid red;*/
  display: inline-block;
  -webkit-transition: all 0.5s ease;
 }
@@ -216,6 +343,10 @@ cursor: pointer;
     left: 290px;
     width: 900px;
 
+}
+
+.react-codemirror2 {
+  border: 1px solid;
 }
 `;
 

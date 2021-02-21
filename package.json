@@ -1,8 +1,8 @@
 {
   "name": "csound-manual-react",
-  "version": "1.0.0-alpha15",
+  "version": "1.0.0-alpha16",
   "description": "",
-  "main": "lib/manual/main.js",
+  "main": "lib/manual/index.js",
   "scripts": {
     "build": "webpack --mode production",
     "build:watch": "webpack --devtool=source-map --mode development --watch",
@@ -11,22 +11,24 @@
   },
   "author": "Hlöðver Sigurðsson",
   "license": "GPL-3.0-or-later",
-  "dependencies": {
-    "@babel/core": "^7.10.2",
-    "@babel/preset-env": "^7.10.2",
-    "@babel/preset-react": "^7.10.1",
-    "babel-loader": "^8.1.0",
-    "clean-webpack-plugin": "^3.0.0",
-    "fuse.js": "^6.0.0",
-    "react": "^16.13.1",
-    "react-debounce-input": "^3.2.2",
-    "react-router-dom": "^5.2.0",
-    "react-window": "^1.8.5",
-    "unescape": "^1.0.1",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11"
-  },
   "devDependencies": {
-    "copy-webpack-plugin": "^6.0.1"
+    "@babel/core": "^7.12.17",
+    "@babel/preset-env": "^7.12.17",
+    "@babel/preset-react": "^7.12.13",
+    "babel-loader": "^8.2.2",
+    "clean-webpack-plugin": "^3.0.0",
+    "fuse.js": "^6.4.6",
+    "react": "^17.0.1",
+    "react-debounce-input": "^3.2.3",
+    "react-router-dom": "^5.2.0",
+    "react-tooltip": "^4.2.14",
+    "react-window": "^1.8.6",
+    "unescape": "^1.0.1",
+    "webpack": "^5.23.0",
+    "webpack-cli": "^4.5.0"
+  },
+  "dependencies": {
+    "@hlolli/react-modal-resizable-draggable": "^0.1.5",
+    "react-copy-to-clipboard": "^5.0.3"
   }
 }

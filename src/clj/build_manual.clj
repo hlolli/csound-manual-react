@@ -57,7 +57,26 @@
   <!ENTITY namepeter \"Peter Brinkmann\">
   <!ENTITY nametito \"Tito Latini\">
   <!ENTITY namepaul \"Paul Batchelor\">
-  <!ENTITY nameeduardo \"Eduardo Moguillansky\">"))
+  <!ENTITY nameeduardo \"Eduardo Moguillansky\">
+  <!ENTITY namedave \"Dave Seidel\">"))
+
+(defn delete-directory-recursive
+  "Recursively delete a directory."
+  [^java.io.File file]
+  (when (.isDirectory file)
+    (doseq [file-in-dir (.listFiles file)]
+      (delete-directory-recursive file-in-dir)))
+  (io/delete-file file))
+
+(defn store-assets
+  [^java.io.File from ^java.io.File to]
+  (let [files-in-dir (.listFiles from)]
+    (doseq [f files-in-dir]
+      (when (and
+             (.exists f)
+             (.isFile f)
+             (not (string/ends-with? (.getName f) ".csd")))
+        (io/copy f (io/file to (.getName f)))))))
 
 (defn remove-bom [dirty-string]
   (.replace dirty-string "\uFEFF" ""))
@@ -155,7 +174,7 @@
           render() {
             const CodeMirrorPainter = this.props.codeMirrorPainter || <></>;
             return (
-             <div>
+             <div className='manual-wrapper'>
               <div style={{display: 'flex', justifyContent: 'space-between', marginTop: 17}} className='manual-header'>
                 <a onClick={() => this.routerRef.current.history.goBack()}>Back</a>
                 <a onClick={() => this.routerRef.current.history.push('/manual/main')}>Home</a>
@@ -172,8 +191,8 @@
        ))
 
 (def index-js-suffix
-  (str "    <Route path='/manual/main' component={React.lazy(() => import(/* webpackChunkName: 'manual_main' */'./manual_main.jsx'))} />
-        <Route path='/manual' exact component={React.lazy(() => import( /* webpackChunkName: 'manual_main' */'./manual_main.jsx'))} />
+  (str "    <Route path='/manual/main' component={React.lazy(() => import(/* webpackChunkName: 'main' */'./main.jsx'))} />
+        <Route path='/manual' exact component={React.lazy(() => import( /* webpackChunkName: 'main' */'./main.jsx'))} />
         <Route component={() => <h1>404 not found</h1>} />
        </Switch>
        </Suspense>
@@ -257,28 +276,44 @@
       (clojure.string/replace #"(?<!\|)(\|\|)(?![\|])" "|")
       (clojure.string/replace #"(?<!\|)(\|\|\|\|)(?![\|])" "||")))
 
+(defn fix-csound-prop [str]
+  (-> str
+      (string/replace "Csound=\"{this.props.Csound}\"" "Csound={this.props.Csound}")
+      (string/replace "\"{this.state.currentExample}\"" "{this.state.currentExample}")
+      (string/replace "\"{this.props.theme}\"" "{this.props.theme}")
+      (string/replace "\"{this.setCurrentExample}\"" "{this.setCurrentExample}")))
+
 (def manual-main
   (slurp "resources/manual_main.jsx"))
 
 (defn scoregens []
   (let []))
 
-(defn -main [& args]
-  (let [opcodes-dir (rest (file-seq (io/file "manual/opcodes")))
+(defn -main [manual-path & args]
+
+  (let [opcodes-dir (rest (file-seq (io/file (str manual-path "/opcodes"))))
         opcodes-dir (remove #(remove-xmls (.getName %)) opcodes-dir)
         parsed-xmls (map #(hash-map :parsed-xml
                                     (do (println "xml-compiling:" (.getName %))
                                         (xml-compiler %)) :file %
                                     :type :opcode) opcodes-dir)
         parsed-xmls (sort-by #(.getName (:file %)) (into [] parsed-xmls))
-        scoregen-dir (rest (file-seq (io/file "manual/scoregens")))
+        scoregen-dir (rest (file-seq (io/file (str manual-path "/scoregens"))))
         scoregen-dir (remove #(remove-xmls (.getName %)) scoregen-dir)
         parsed-scoregen-xmls (map #(hash-map :parsed-xml
                                              (do (println "xml-compiling:" (.getName %))
                                                  (xml-compiler %)) :file %
                                              :type :scoregen) scoregen-dir)
         parsed-scoregen-xmls (sort-by #(.getName (:file %)) (into [] parsed-scoregen-xmls))
-        out-dir (io/file "tmp")]
+        out-dir (io/file "tmp")
+        assets-dir (io/file "assets")]
+    (when (.exists out-dir)
+      (delete-directory-recursive out-dir))
+    (when (.exists assets-dir)
+      (delete-directory-recursive assets-dir))
+    (.mkdirs out-dir)
+    (.mkdirs assets-dir)
+    (store-assets (io/file (str manual-path "/examples")) assets-dir)
     (loop [[{:keys [parsed-xml file type]} & rest]
            ;; (into (take 40 parsed-xmls)  parsed-scoregen-xmls)
            (into parsed-xmls parsed-scoregen-xmls)
@@ -295,7 +330,7 @@
                   (str "export default {\n"
                        synopsis-js
                        "\n }"))
-            (spit (io/file out-dir "manual_main.jsx")
+            (spit (io/file out-dir "main.jsx")
                   (format manual-main main-js))
             (io/copy (io/file "resources/styles.jsx")
                      (io/file out-dir "styles.jsx"))
@@ -322,12 +357,21 @@
               index-entry (str (format "<Route path='/manual/%s' component={%s} />\n"
                                        ;; (StringEscapeUtils/escapeHtml4 opname)
                                        (if (#{"*" "/"} opname) modulename opname)
-                                       (str "React.lazy(() => import( /* webpackChunkName: '" modulename "' */'./" filename "'))"))
+                                       (str "() => {
+                                                const LazyComp = React.lazy(() =>
+                                                  import( /* webpackChunkName: '" modulename "' */'./" filename "'));
+                                                return (<LazyComp Csound={this.props.Csound} theme={this.props.theme} />);
+                                              }"
+                                            ))
                                (when (and (not= id opname) (not= "/" opname))
                                  ;; (prn id opname)
                                  (format "<Route path='/manual/%s' component={%s} />\n"
                                          id
-                                         (str "React.lazy(() => import( /* webpackChunkName: '" modulename "' */'./" filename "'))"))))
+                                         (str "() => {
+                                                const LazyComp = React.lazy(() =>
+                                                  import( /* webpackChunkName: '" modulename "' */'./" filename "'));
+                                                return (<LazyComp Csound={this.props.Csound} theme={this.props.theme} />);
+                                               }"))))
               main-entry (format "{name: '%s', url: '/manual/%s', short: '%s', type: '%s'},\n" opname modulename short-desc (name type))
               synopsis-entry (str "\"" opname "\": {synopsis: " (json/write-str synopsis) ", id: " "'" id "'" ", type: " "'" (name type) "'"  "},")]
           (spit (.getPath (io/file out-dir filename))
@@ -338,6 +382,7 @@
                     replace-quote-tags
                     fix-pipes
                     (quote-curlues modulename)
+                    fix-csound-prop
                     ;; (quote-double-curlies modulename)
                     ;; simple-unescape
                     ;; StringEscapeUtils/unescapeHtml4

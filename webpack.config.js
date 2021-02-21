@@ -1,13 +1,13 @@
 const path = require("path");
 const webpack = require("webpack");
-const CopyPlugin = require("copy-webpack-plugin");
+// const CopyPlugin = require("copy-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 const destDir = __dirname + "/lib/manual";
 
 module.exports = {
   entry: {
-    main: "./tmp/index.jsx",
+    index: "./tmp/index.jsx",
     synopsis: "./tmp/synopsis.jsx",
   },
   output: {
@@ -17,8 +17,8 @@ module.exports = {
     path: destDir,
   },
   optimization: {
-    namedModules: true,
-    namedChunks: true,
+    moduleIds: "named",
+    chunkIds: "named",
     splitChunks: { cacheGroups: { default: false } },
   },
   // target: "node",
@@ -80,79 +80,5 @@ module.exports = {
     //     commonjs2: "unescape"
     // }
   },
-  plugins: [
-    new CleanWebpackPlugin(),
-    new CopyPlugin({
-      patterns: [
-        {
-          from: path.resolve(__dirname, "./manual/examples/*.wav"),
-          to: destDir,
-          context: "manual/examples",
-        },
-        {
-          from: path.resolve(__dirname, "./manual/examples/*.aiff"),
-          to: destDir,
-          context: "manual/examples",
-        },
-        {
-          from: path.resolve(__dirname, "./manual/examples/*.mp3"),
-          to: destDir,
-          context: "manual/examples",
-        },
-        {
-          from: path.resolve(__dirname, "./manual/examples/*.mid"),
-          to: destDir,
-          context: "manual/examples",
-        },
-        {
-          from: path.resolve(__dirname, "./manual/examples/*.ats"),
-          to: destDir,
-          context: "manual/examples",
-        },
-        {
-          from: path.resolve(__dirname, "./manual/examples/*.dat"),
-          to: destDir,
-          context: "manual/examples",
-        },
-        {
-          from: path.resolve(__dirname, "./manual/examples/*.sdif"),
-          to: destDir,
-          context: "manual/examples",
-        },
-        {
-          from: path.resolve(__dirname, "./manual/examples/*.het"),
-          to: destDir,
-          context: "manual/examples",
-        },
-        {
-          from: path.resolve(__dirname, "./manual/examples/*.sf2"),
-          to: destDir,
-          context: "manual/examples",
-        },
-        {
-          from: path.resolve(__dirname, "./manual/examples/*.png"),
-          to: destDir,
-          context: "manual/examples",
-        },
-        {
-          from: path.resolve(__dirname, "./manual/examples/*.txt"),
-          to: destDir,
-          context: "manual/examples",
-        },
-        {
-          from: path.resolve(__dirname, "./manual/examples/*.matrix"),
-          to: destDir,
-          context: "manual/examples",
-        },
-        {
-          from: path.resolve(__dirname, "./manual/examples/HRTFcompact"),
-          to: destDir,
-          context: "manual/examples",
-        },
-      ],
-      options: {
-        // flatten: true,
-      },
-    }),
-  ],
+  plugins: [new CleanWebpackPlugin()],
 };
