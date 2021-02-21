@@ -75,6 +75,22 @@ module.exports = {
       commonjs: "react-perfect-scrollbar",
       commonjs2: "react-perfect-scrollbar",
     },
+    "@hlolli/react-modal-resizable-draggable": {
+      commonjs: "@hlolli/react-modal-resizable-draggable",
+      commonjs2: "@hlolli/react-modal-resizable-draggable",
+    },
+    codemirror: {
+      commonjs: "codemirror",
+      commonjs2: "codemirror",
+    },
+    "fuse.js": {
+      commonjs: "fuse.js",
+      commonjs2: "fuse.js",
+    },
+    "react-tooltip": {
+      commonjs: "react-tooltip",
+      commonjs2: "react-tooltip",
+    },
     // unescape: {
     //     commonjs: "unescape",
     //     commonjs2: "unescape"
