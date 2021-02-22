@@ -1,8 +1,10 @@
 import React, { Component } from "react";
-import { UnControlled as CodeMirror } from "react-codemirror2";
+import * as CodeMirror from "codemirror";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import ReactModal from "@hlolli/react-modal-resizable-draggable";
 import ReactTooltip from "react-tooltip";
+
+require("@comp/editor/modes/csound/csound").registerCsoundMode(CodeMirror);
 
 const assets = [
   "01hpschd.sf2",
@@ -124,6 +126,7 @@ class ManualEditor extends React.Component {
     };
     this.playCSD = this.playCSD.bind(this);
     this.messageCallback = this.messageCallback.bind(this);
+    this.cmRef = React.createRef();
   }
 
   messageCallback(msg) {
@@ -205,6 +208,23 @@ class ManualEditor extends React.Component {
 
   componentDidMount() {
     ReactTooltip.rebuild();
+    if (this.cmRef && this.cmRef.current) {
+      const editor = CodeMirror.fromTextArea(this.cmRef.current, {
+        autoCloseBrackets: true,
+        autoSuggest: true,
+        fullScreen: true,
+        lineNumbers: true,
+        lineWrapping: true,
+        matchBrackets: true,
+        viewportMargin: Number.POSITIVE_INFINITY,
+        mode: { name: "csound", documentType: "csd" },
+      });
+      editor.on(
+        "change",
+        (cm) =>
+          console.log("CM?", cm) || this.setState({ changedVal: cm.getValue() })
+      );
+    }
   }
   render() {
     const initVal = this.props.value;
@@ -313,23 +333,13 @@ class ManualEditor extends React.Component {
             </button>
           </div>
         </CopyToClipboard>
-        <CodeMirror
-          onChange={(editor, data, value) =>
-            this.setState({ changedVal: value })
-          }
-          options={{
-            mode: "csound",
-            autoCloseBrackets: true,
-            fullScreen: true,
-            lineNumbers: true,
-            lineWrapping: true,
-            matchBrackets: true,
-            viewportMargin: Infinity,
-            readOnly: false,
-            nocursor: false,
-          }}
-          value={initVal}
-        ></CodeMirror>
+        <form style={{ overflowY: "hidden", height: "100%" }}>
+          <textarea
+            ref={this.cmRef}
+            style={{ fontSize: `16px !important` }}
+            defaultValue={initVal || ""}
+          ></textarea>
+        </form>
       </div>
     );
   }

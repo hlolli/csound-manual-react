@@ -1,6 +1,6 @@
 {
   "name": "csound-manual-react",
-  "version": "1.0.0-alpha18",
+  "version": "1.0.0-alpha20",
   "description": "",
   "main": "lib/manual/index.js",
   "scripts": {
@@ -21,7 +21,6 @@
     "codemirror": "^5.59.3",
     "fuse.js": "^6.4.6",
     "react": "^17.0.1",
-    "react-codemirror2": "^7.2.1",
     "react-copy-to-clipboard": "^5.0.3",
     "react-debounce-input": "^3.2.3",
     "react-router-dom": "^5.2.0",
@@ -34,11 +33,7 @@
     "codemirror": "5.x",
     "fuse.js": "6.x",
     "react": "17.x",
-    "react-codemirror2": "7.x",
     "react-copy-to-clipboard": "5.x",
     "unescape": "^1.0.1"
-  },
-  "dependencies": {
-    "codemirror": "^5.59.3"
   }
 }

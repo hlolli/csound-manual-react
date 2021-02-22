@@ -63,17 +63,9 @@ module.exports = {
       amd: "ReactRouterDOM",
       root: "ReactRouterDOM",
     },
-    "react-codemirror2": {
-      commonjs: "react-codemirror2",
-      commonjs2: "react-codemirror2",
-    },
     "react-debounce-input": {
       commonjs: "react-debounce-input",
       commonjs2: "react-debounce-input",
-    },
-    "react-perfect-scrollbar": {
-      commonjs: "react-perfect-scrollbar",
-      commonjs2: "react-perfect-scrollbar",
     },
     "@hlolli/react-modal-resizable-draggable": {
       commonjs: "@hlolli/react-modal-resizable-draggable",
@@ -82,6 +74,12 @@ module.exports = {
     codemirror: {
       commonjs: "codemirror",
       commonjs2: "codemirror",
+      amd: "CodeMirror",
+      root: "CodeMirror",
+    },
+    "@comp/editor/modes/csound/csound": {
+      commonjs: "@comp/editor/modes/csound/csound",
+      commonjs2: "@comp/editor/modes/csound/csound",
     },
     "fuse.js": {
       commonjs: "fuse.js",

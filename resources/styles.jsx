@@ -124,14 +124,18 @@ thead {
     scrollbar-color: ${theme.scrollbar} transparent;
 }
 
+body::-webkit-scrollbar,
 .manual-logs::-webkit-scrollbar {
   width: 8px;
 }
 
+body:scrollbar-track,
+body::-webkit-scrollbar-track
 .manual-logs:scrollbar-track,
 .manual-logs::-webkit-scrollbar-track {
   background: transparent;
 }
+body::-webkit-scrollbar-thumb,
 .manual-logs::-webkit-scrollbar-thumb {
   background-color: ${theme.scrollbar};
   width: 6px;
@@ -139,21 +143,26 @@ thead {
   border: 3px solid transparent;
 }
 
-.manual-logs:hover {
-  scrollbar-color: ${theme.scrollbarHover};
-}
-
+body::-webkit-scrollbar-thumb,
 .manual-logs::-webkit-scrollbar-thumb {
-            background-color: ${theme.scrollbarHover};
-            width: 6px;
-            border-radius: 6px;
-            border: 3px solid transparent;
+  background-color: ${theme.scrollbar};
+  width: 6px;
+  border-radius: 6px;
+  border: 3px solid transparent;
+  opacity: 0.8;
 }
 
+body::-webkit-scrollbar-track,
 .manual-logs::-webkit-scrollbar-track {
   background: ${theme.highlightBackgroundAlt};
 }
 
+body:hover,.manual-logs:hover {
+   -webkit-transition: all 0.2s ease;
+   transition: all 0.2s ease;
+   opacity: 1;
+   scrollbar-color: ${theme.scrollbar};
+}
 
 .manual-para {
    margin: 12px 0;
@@ -189,6 +198,9 @@ thead {
    font-size: 14px;
    text-decoration: none;
    margin: 3px 0;
+   white-space: nowrap;
+   text-overflow: ellipsis;
+   overflow: hidden;
 }
 
 .manual-main-entry:hover {
