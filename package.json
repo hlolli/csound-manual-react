@@ -1,6 +1,6 @@
 {
   "name": "csound-manual-react",
-  "version": "1.0.0-alpha20",
+  "version": "1.0.0-alpha21",
   "description": "",
   "main": "lib/manual/index.js",
   "scripts": {

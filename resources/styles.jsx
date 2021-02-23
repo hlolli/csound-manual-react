@@ -247,12 +247,16 @@ body:hover,.manual-logs:hover {
 .manual-button-container {
   text-align: left;
   display: flex;
-  zoom: 33%;
   position: relative;
-  margin: 60px 0;
+  margin: 12px 0;
   flex-direction: row;
   justify-content: space-between;
-  height: 180px;
+  height: 72px;
+}
+
+.manual-button-container svg {
+  width: 72px;
+  height: 72px;
 }
 
 .copy-btn-container {
@@ -328,11 +332,13 @@ body:hover,.manual-logs:hover {
 }
 
 .manual-play-button {
-width: 50%;
+width: 100%;
 height: 100%;
 cursor: pointer;
- display: inline-block;
+ display: flex;
  -webkit-transition: all 0.5s ease;
+flex-direction: row;
+align-content: center;
 }
 
 .manual-play-button:hover .manual-button-triangle {
@@ -348,18 +354,34 @@ cursor: pointer;
 }
 
 .manual-play-button p {
-    font-size: 72px;
-    position: absolute;
-    top: 62px;
-    margin: 0;
-    left: 290px;
-    width: 900px;
-
+    font-size: 32px;
+    position: relative;
+    align-self: center;
+    margin-left: 12px;
 }
 
-.react-codemirror2 {
+.CodeMirror-wrap {
   border: 1px solid;
 }
+.close-console {
+  width: 12px;
+  height: 12px;
+  display: block;
+  position: absolute;
+  right: 6px;
+  top: -3px;
+  z-index: 100;
+  cursor: pointer;
+}
+
+.close-console svg > path {
+  fill: ${theme ? theme.buttonBackground : "black"}!important;
+}
+
+.close-console:hover svg > path {
+  opacity: 0.8;
+}
+
 `;
 
 class ManualStyles extends Component {

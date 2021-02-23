@@ -113,6 +113,27 @@ function ClipboardIcon() {
   );
 }
 
+function CloseIcon({ clearLogs }) {
+  return (
+    <span class="close-console" title="close window" onClick={clearLogs}>
+      <svg
+        aria-hidden="true"
+        focusable="false"
+        data-prefix="fas"
+        data-icon="window-close"
+        class="svg-inline--fa fa-window-close fa-w-16 fa-sm "
+        role="img"
+        viewBox="0 0 512 512"
+      >
+        <path
+          fill="currentColor"
+          d="M464 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zm-83.6 290.5c4.8 4.8 4.8 12.6 0 17.4l-40.5 40.5c-4.8 4.8-12.6 4.8-17.4 0L256 313.3l-66.5 67.1c-4.8 4.8-12.6 4.8-17.4 0l-40.5-40.5c-4.8-4.8-4.8-12.6 0-17.4l67.1-66.5-67.1-66.5c-4.8-4.8-4.8-12.6 0-17.4l40.5-40.5c4.8-4.8 12.6-4.8 17.4 0l66.5 67.1 66.5-67.1c4.8-4.8 12.6-4.8 17.4 0l40.5 40.5c4.8 4.8 4.8 12.6 0 17.4L313.3 256l67.1 66.5z"
+        ></path>
+      </svg>
+    </span>
+  );
+}
+
 class ManualEditor extends React.Component {
   constructor(props) {
     super(props);
@@ -126,6 +147,7 @@ class ManualEditor extends React.Component {
     };
     this.playCSD = this.playCSD.bind(this);
     this.messageCallback = this.messageCallback.bind(this);
+    this.clearLogs = this.clearLogs.bind(this);
     this.cmRef = React.createRef();
   }
 
@@ -134,6 +156,10 @@ class ManualEditor extends React.Component {
     document
       .querySelectorAll(".manual-logs")
       .forEach((el) => el.scrollTo(0, el.scrollHeight));
+  }
+
+  clearLogs() {
+    this.setState({ ...this.state, logs: "" });
   }
 
   playCSD(csd) {
@@ -246,6 +272,7 @@ class ManualEditor extends React.Component {
             this.state.logs.length > 0
           }
         >
+          <CloseIcon clearLogs={this.clearLogs} />
           <pre className="manual-logs">{this.state.logs}</pre>
         </ReactModal>
         <div className="manual-button-container">
