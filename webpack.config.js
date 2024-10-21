@@ -15,6 +15,7 @@ module.exports = {
     libraryTarget: "umd",
     publicPath: "/manual/",
     path: destDir,
+    globalObject: "this",
   },
   optimization: {
     moduleIds: "named",

@@ -5,16 +5,16 @@ with import <nixpkgs> {};
 stdenv.mkDerivation {
   name = "csound-manual-to-react";
   src = pkgs.fetchFromGitHub {
-    owner = "csound";
+    owner = "hlolli";
     repo = "manual";
-    rev = "70ae6ceb3a7d002ceaa2d737f95adf2c4e46d1de";
-    sha256 = "00gc6szc7pc6xp9nkkvw6wkky6qd67x7aabcsjkhnxz4agibn3gq";
+    rev = "96b56e3516a5f1a9a70a9ec1f3b179680aa52ef5";
+    sha256 = "sha256-whEQa97qrjZgq7MIleyeyHpUF6xAQAdHejzMXtkwEO0=";
   };
 
   buildInputs = with pkgs; [ saxon-he clojure ];
   shellHook = ''
     export SAXON_JAR=${ saxon-he }/share/java/saxon9he.jar
-    clojure -Sverbose -Scp $(clojure -Spath):${ saxon-he }/share/java/saxon9he.jar -M -m clj.build-manual $src || exit 1
+    clojure -Sverbose -Scp $(clojure -Spath):${ saxon-he }/share/java/saxon9he.jar -M -m clj.upload-manual $src || exit 1
     exit 0
   '';
 }

@@ -7,7 +7,7 @@ declare namespace xi="http://www.w3.org/2001/XInclude";
 declare function f:change-links
   ( $nodes as node()*)  as node()* {
   let $oldName := xs:QName('link')
-  let $newName := xs:QName('Link')
+  let $newName := xs:QName('a')
   for $node in $nodes
    return if ($node instance of element())
           then element
@@ -15,7 +15,7 @@ declare function f:change-links
                       then $newName
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
-                      then attribute {"to"} {concat("/manual/", $node/@linkend)}
+                      then attribute {"href"} {concat("/manual/", $node/@linkend)}
                       else $node/@*,
                   if (node-name($node) = $oldName)
                       then string-join($node, "")
@@ -57,7 +57,7 @@ declare function f:change-programlisting
                       then $newName
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
-                      then attribute {"className"} {"manual-programlisting"}
+                      then attribute {"class"} {"manual-programlisting"}
                       else $node/@*,
                   f:change-programlisting($node/node())}
           else if ($node instance of document-node())
@@ -76,7 +76,7 @@ declare function f:change-informalexample
                       then $newName
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
-                      then attribute {"className"} {"manual-informalexample"}
+                      then attribute {"class"} {"manual-informalexample"}
                       else $node/@*,
                   f:change-informalexample($node/node())}
           else if ($node instance of document-node())
@@ -95,7 +95,7 @@ declare function f:change-example
                       then $newName
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
-                      then attribute {"className"} {"manual-example"}
+                      then attribute {"class"} {"manual-example"}
                       else $node/@*,
                   f:change-example($node/node())}
           else if ($node instance of document-node())
@@ -114,7 +114,7 @@ declare function f:change-member
                       then $newName
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
-                      then attribute {"className"} {"manual-member"}
+                      then attribute {"class"} {"manual-member"}
                       else $node/@*,
                   f:change-member($node/node())}
           else if ($node instance of document-node())
@@ -133,7 +133,7 @@ declare function f:change-itemizedlist
                       then $newName
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
-                      then attribute {"className"} {"manual-itemizedlist"}
+                      then attribute {"class"} {"manual-itemizedlist"}
                       else $node/@*,
                   f:change-itemizedlist($node/node())}
           else if ($node instance of document-node())
@@ -152,7 +152,7 @@ declare function f:change-orderedlist
                       then $newName
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
-                      then attribute {"className"} {"manual-orderedlist"}
+                      then attribute {"class"} {"manual-orderedlist"}
                       else $node/@*,
                   f:change-orderedlist($node/node())}
           else if ($node instance of document-node())
@@ -171,7 +171,7 @@ declare function f:change-listitem
                       then $newName
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
-                      then attribute {"className"} {"manual-listitem"}
+                      then attribute {"class"} {"manual-listitem"}
                       else $node/@*,
                   f:change-listitem($node/node())}
           else if ($node instance of document-node())
@@ -190,7 +190,7 @@ declare function f:change-simplelist
                       then $newName
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
-                      then attribute {"className"} {"manual-simplelist"}
+                      then attribute {"class"} {"manual-simplelist"}
                       else $node/@*,
                   f:change-simplelist($node/node())}
           else if ($node instance of document-node())
@@ -209,7 +209,7 @@ declare function f:change-command
                       then $newName
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
-                      then attribute {"className"} {"manual-command"}
+                      then attribute {"class"} {"manual-command"}
                       else $node/@*,
                   f:change-command($node/node())}
           else if ($node instance of document-node())
@@ -228,7 +228,7 @@ declare function f:change-title
                       then $newName
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
-                      then attribute {"className"} {"manual-title-elem"}
+                      then attribute {"class"} {"manual-title-elem"}
                       else $node/@*,
                   f:change-title($node/node())}
           else if ($node instance of document-node())
@@ -247,7 +247,7 @@ declare function f:change-synopsis
                       then $newName
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
-                      then attribute {"className"} {"manual-synopsis"}
+                      then attribute {"class"} {"manual-synopsis"}
                       else $node/@*,
                   f:change-synopsis($node/node())}
           else if ($node instance of document-node())
@@ -262,7 +262,7 @@ declare function f:change-synopsis
 declare function f:include-example
   ( $nodes as node()*)  as node()* {
   let $oldName := xs:QName('xi:include')
-  let $newName := xs:QName('ManualEditor')
+  let $newName := xs:QName('code')
   for $node in $nodes
    return if ($node instance of element())
           then element
@@ -270,18 +270,12 @@ declare function f:include-example
                       then $newName
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
-                      then (attribute {"className"} {"manual-example-code"},
-                            attribute {"Csound"} {"{this.props.Csound}"},
-                            attribute {"currentExample"} {"{this.state.currentExample}"},
-                            attribute {"setCurrentExample"} {"{this.setCurrentExample}"},
-                            attribute {"theme"} {"{this.props.theme}"},
-                            attribute {"exampleName"} {$node/@href},
-                            attribute {"value"} {
-                              replace(
+                      then (attribute {"class"} {"manual-example-code"},
+                            replace(
                                 fn:unparsed-text(
                                   replace(
                                     concat(environment-variable("src"), "/" || $node/@href), ".xml", "")
-                                  ), "&#xA;", "&#xD;")})
+                                  ), "&#xA;", "&#xD;"))
                       else $node/@*,
                   if (node-name($node) = $oldName)
                       then ""
@@ -302,7 +296,7 @@ declare function f:change-literallayout
                       then $newName
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
-                      then attribute {"className"} {"manual-literallayout"}
+                      then attribute {"class"} {"manual-literallayout"}
                       else $node/@*,
                   f:change-literallayout($node/node())}
           else if ($node instance of document-node())
@@ -342,7 +336,7 @@ declare function f:change-textobject
                       then $newName
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
-                      then attribute {"className"} {"manual-textobject"}
+                      then attribute {"class"} {"manual-textobject"}
                       else $node/@*,
                   f:change-textobject($node/node())}
           else if ($node instance of document-node())
@@ -361,7 +355,7 @@ declare function f:change-phrase
                       then $newName
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
-                      then attribute {"className"} {"manual-phrase"}
+                      then attribute {"class"} {"manual-phrase"}
                       else $node/@*,
                   f:change-phrase($node/node())}
           else if ($node instance of document-node())
@@ -380,7 +374,7 @@ declare function f:change-caption
                       then $newName
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
-                      then attribute {"className"} {"manual-caption"}
+                      then attribute {"class"} {"manual-caption"}
                       else $node/@*,
                   f:change-caption($node/node())}
           else if ($node instance of document-node())
@@ -399,7 +393,7 @@ declare function f:change-mediaobject
                       then $newName
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
-                      then attribute {"className"} {"manual-mediaobject"}
+                      then attribute {"class"} {"manual-mediaobject"}
                       else $node/@*,
                   f:change-mediaobject($node/node())}
           else if ($node instance of document-node())
@@ -418,7 +412,7 @@ declare function f:change-imageobject
                       then $newName
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
-                      then attribute {"className"} {"manual-imageobject"}
+                      then attribute {"class"} {"manual-imageobject"}
                       else $node/@*,
                   f:change-imageobject($node/node())}
           else if ($node instance of document-node())
@@ -437,7 +431,7 @@ declare function f:change-informaltable
                       then $newName
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
-                      then attribute {"className"} {"manual-informaltable"}
+                      then attribute {"class"} {"manual-informaltable"}
                       else $node/@*,
                   f:change-informaltable($node/node())}
           else if ($node instance of document-node())
@@ -456,7 +450,7 @@ declare function f:change-tgroup
                       then $newName
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
-                      then (attribute {"className"} {"manual-tgroup"},
+                      then (attribute {"class"} {"manual-tgroup"},
                            attribute {"border"} {"1 solid white"})
                       else $node/@*,
                   f:change-tgroup($node/node())}
@@ -476,7 +470,7 @@ declare function f:change-row
                       then $newName
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
-                      then attribute {"className"} {"manual-row"}
+                      then attribute {"class"} {"manual-row"}
                       else $node/@*,
                   f:change-row($node/node())}
           else if ($node instance of document-node())
@@ -495,7 +489,7 @@ declare function f:change-entry
                       then $newName
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
-                      then attribute {"className"} {"manual-entry"}
+                      then attribute {"class"} {"manual-entry"}
                       else $node/@*,
                   f:change-entry($node/node())}
           else if ($node instance of document-node())
@@ -514,7 +508,7 @@ declare function f:change-subscript
                       then $newName
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
-                      then attribute {"className"} {"manual-subscript"}
+                      then attribute {"class"} {"manual-subscript"}
                       else $node/@*,
                   f:change-subscript($node/node())}
           else if ($node instance of document-node())
@@ -533,7 +527,7 @@ declare function f:change-superscript
                       then $newName
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
-                      then attribute {"className"} {"manual-superscript"}
+                      then attribute {"class"} {"manual-superscript"}
                       else $node/@*,
                   f:change-superscript($node/node())}
           else if ($node instance of document-node())
@@ -552,7 +546,7 @@ declare function f:change-note
                       then $newName
                       else node-name($node) }
                  {if (node-name($node) = $oldName)
-                      then attribute {"className"} {"manual-note"}
+                      then attribute {"class"} {"manual-note"}
                       else $node/@*,
                   f:change-note($node/node())}
           else if ($node instance of document-node())

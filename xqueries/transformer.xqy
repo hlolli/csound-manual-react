@@ -86,13 +86,13 @@ let $refsects :=
     let $paratr29 := f:change-superscript($paratr28)
     let $paratr30 := f:change-superscript($paratr29)
 
-    return <div className="manual-para">{$paratr30}</div>
+    return <div class="manual-para">{$paratr30}</div>
   let $s := for $synop in $refsect/synopsis
     let $synoptr1 := f:change-command($synop)
     let $synoptr2 := f:change-synopsis($synoptr1)
-    return <div className="manual-synopsis-container">{$synoptr2}</div>
+    return <div class="manual-synopsis-container">{$synoptr2}</div>
   return
-  <div className="manual-refsect1">
+  <div class="manual-refsect1">
    <h1>{string($refsect/title[1])}</h1>
    {$s}
    {$p}
@@ -109,22 +109,4 @@ let $jsx :=
     {$refsects}
   </div>
 
-return string(
-'import React from "react";' || $n ||
-'import { Link, withRouter } from "react-router-dom";'  || $n ||
-'import ManualEditor from "./manual_editor.jsx";' || $n ||
-"import unescape from 'unescape';" || $n ||
-$n ||
-"class " || $id || "Class" || " extends React.Component {" || $n ||
-" constructor(props) { super(props); this.state = { currentExample: null }; this.setCurrentExample = this.setCurrentExample.bind(this); }" || $n ||
-" setCurrentExample (newExample) { this.setState({ currentExample: newExample }); }" || $n ||
-" componentDidMount () { document.scrollingElement.scrollTop = 0; }" || $n ||
-" render () { " || $n ||
-"  return ( " || fn:serialize($jsx) || ");" || $n ||
-"  }" || $n ||
-"}" || $n ||
-(:
- : "export default " || $id || "Class;"
- :)
-"export default withRouter(" || $id || "Class" || ");"
-)
+return $jsx
